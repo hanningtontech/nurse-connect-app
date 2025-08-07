@@ -1,0 +1,43 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="#E7F0FE"
+        android:pathData="M40,40m-36,0a36,36 0,1 1,72 0a36,36 0,1 1,-72 0" />
+    
+    <!-- Nurse cap -->
+    <path
+        android:fillColor="#007BFF"
+        android:pathData="M25,25 L55,25 L55,35 L50,35 L50,40 L30,40 L30,35 L25,35 Z" />
+    
+    <!-- Face -->
+    <path
+        android:fillColor="#FFE0B2"
+        android:pathData="M30,35 L50,35 L50,55 L30,55 Z" />
+    
+    <!-- Eyes -->
+    <path
+        android:fillColor="#212529"
+        android:pathData="M35,42 L37,42 L37,44 L35,44 Z" />
+    <path
+        android:fillColor="#212529"
+        android:pathData="M43,42 L45,42 L45,44 L43,44 Z" />
+    
+    <!-- Smile -->
+    <path
+        android:fillColor="#212529"
+        android:pathData="M35,48 Q40,52 45,48" />
+    
+    <!-- Nurse cross on cap -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,28 L42,28 L42,32 L38,32 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,26 L40,34 L38,34 L38,26 Z" />
+    
+</vector> 

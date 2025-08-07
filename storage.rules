@@ -1,0 +1,54 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Profile pictures - Allow users to upload and read their own profile pictures
+    match /profile_pictures/{userId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Profile images (alternative path for backward compatibility)
+    match /profile_images/{userId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Profile images with timestamp format (used by CommunityProfileService)
+    match /profile_images/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    
+    // Study materials - Allow authenticated users to upload, read, and delete
+    match /study_materials/{materialId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write, delete: if request.auth != null;
+    }
+    
+    // Thumbnails - Allow authenticated users to upload, read, and delete
+    match /thumbnails/{thumbnailId} {
+      allow read: if request.auth != null;
+      allow write, delete: if request.auth != null;
+    }
+    
+    // Chat attachments
+    match /chat_attachments/{chatId}/{messageId}/{allPaths=**} {
+      allow read, write: if request.auth != null && 
+        (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants || 
+         request.auth.uid == get(/databases/$(database)/documents/chats/$(chatId)).data.createdBy);
+    }
+    
+    // Post media - Allow authenticated users to upload and read post images/videos
+    match /post_media/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    
+
+    
+    // Default rule - deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+} 

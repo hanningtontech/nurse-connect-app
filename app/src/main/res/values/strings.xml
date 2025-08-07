@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Nurse_Connect</string>
+    <string name="app_name_full">Nurse Connect</string>
+    <string name="welcome_message">Welcome to Nurse Connect</string>
+    <string name="study_together">Study Together</string>
+    <string name="connect_with_nurses">Connect with Nurses</string>
+    <string name="learn_and_grow">Learn and Grow</string>
+    <string name="get_started">Get Started</string>
+    <string name="skip">Skip</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="continue_as_guest">Continue as Guest</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="display_name">Display Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="terms_and_conditions">I agree to the Terms and Conditions</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="home">Home</string>
+    <string name="study_hub">Study Hub</string>
+    <string name="upload">Upload</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
+    <string name="default_web_client_id">666993226510-8qpvna5n1n27d6l1ur2tg33n6urhtlkc.apps.googleusercontent.com</string>
+</resources>

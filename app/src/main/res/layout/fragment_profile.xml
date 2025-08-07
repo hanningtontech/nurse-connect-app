@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_background"
+    tools:context=".ui.profile.ProfileFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Profile Header with Menu Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Profile"
+                android:textColor="@color/theme_text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_more_vert"
+                android:contentDescription="Menu"
+                app:tint="@color/theme_text_primary" />
+
+        </LinearLayout>
+
+        <!-- Improved Compact School Profile Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/light_gray">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Compact Header: Profile Image + Basic Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Smaller Profile Image -->
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/ivProfilePicture"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/profile_gradient"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person"
+                        app:civ_border_width="3dp"
+                        app:civ_border_color="@color/theme_primary_variant" />
+
+                    <!-- Compact User Info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvDisplayName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="John Doe"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:lineSpacingMultiplier="1.2" />
+
+                        <TextView
+                            android:id="@+id/tvUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@johndoe"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                                 <!-- Academic Section with Background -->
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical"
+                     android:background="@drawable/academic_section_bg"
+                     android:padding="14dp"
+                     android:layout_marginBottom="14dp">
+
+                     <!-- Student Year and GPA Row -->
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:gravity="center_vertical"
+                         android:layout_marginBottom="6dp">
+
+                         <TextView
+                             android:id="@+id/tvStudyYear"
+                             android:layout_width="0dp"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="1"
+                             android:text="Year 3 Nursing Student"
+                             android:textColor="@color/text_primary"
+                             android:textSize="15sp"
+                             android:textStyle="bold" />
+
+                         <!-- GPA Badge -->
+                         <LinearLayout
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:orientation="horizontal"
+                             android:background="@drawable/student_badge_bg"
+                             android:padding="6dp"
+                             android:gravity="center_vertical">
+
+                             <TextView
+                                 android:id="@+id/tvGPA"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="4.2"
+                                 android:textColor="@color/primary_color"
+                                 android:textSize="12sp"
+                                 android:textStyle="bold"
+                                 android:layout_marginEnd="4dp" />
+
+                             <TextView
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="GPA"
+                                 android:textColor="@color/primary_color"
+                                 android:textSize="10sp"
+                                 android:textStyle="bold"
+                                 android:letterSpacing="0.05" />
+
+                         </LinearLayout>
+
+                     </LinearLayout>
+
+                     <TextView
+                         android:id="@+id/tvSpecialization"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="Medical-Surgical Nursing"
+                         android:textColor="@color/text_secondary"
+                         android:textSize="13sp"
+                         android:textStyle="bold"
+                         android:layout_marginBottom="4dp" />
+
+                     <TextView
+                         android:id="@+id/tvInstitution"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="University of Nursing Sciences"
+                         android:textColor="@color/text_tertiary"
+                         android:textSize="12sp"
+                         android:textStyle="italic" />
+
+                     <!-- Student Badge -->
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:background="@drawable/student_badge_bg"
+                         android:padding="6dp"
+                         android:layout_marginTop="8dp"
+                         android:gravity="center_vertical">
+
+                         <View
+                             android:layout_width="12dp"
+                             android:layout_height="12dp"
+                             android:background="@color/primary_color"
+                             android:layout_marginEnd="4dp" />
+
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="STUDENT"
+                             android:textColor="@color/primary_color"
+                             android:textSize="10sp"
+                             android:textStyle="bold"
+                             android:letterSpacing="0.05" />
+
+                     </LinearLayout>
+
+                 </LinearLayout>
+
+                                 <!-- Compact Social Stats -->
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal"
+                     android:layout_marginBottom="14dp"
+                     android:paddingVertical="8dp">
+
+                     <!-- Followers -->
+                     <LinearLayout
+                         android:id="@+id/llFollowers"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:gravity="center_vertical"
+                         android:background="?android:attr/selectableItemBackground"
+                         android:clickable="true"
+                         android:focusable="true"
+                         android:padding="4dp"
+                         android:layout_marginEnd="16dp">
+
+                         <TextView
+                             android:id="@+id/tvFollowersCount"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="0"
+                             android:textColor="@color/primary_color"
+                             android:textSize="14sp"
+                             android:textStyle="bold"
+                             android:layout_marginEnd="4dp" />
+
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="FOLLOWERS"
+                             android:textColor="@color/text_tertiary"
+                             android:textSize="10sp"
+                             android:textStyle="bold"
+                             android:letterSpacing="0.05" />
+
+                     </LinearLayout>
+
+                     <!-- Following -->
+                     <LinearLayout
+                         android:id="@+id/llFollowing"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:gravity="center_vertical"
+                         android:background="?android:attr/selectableItemBackground"
+                         android:clickable="true"
+                         android:focusable="true"
+                         android:padding="4dp">
+
+                         <TextView
+                             android:id="@+id/tvFollowingCount"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="0"
+                             android:textColor="@color/primary_color"
+                             android:textSize="14sp"
+                             android:textStyle="bold"
+                             android:layout_marginEnd="4dp" />
+
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="FOLLOWING"
+                             android:textColor="@color/text_tertiary"
+                             android:textSize="10sp"
+                             android:textStyle="bold"
+                             android:letterSpacing="0.05" />
+
+                     </LinearLayout>
+
+                 </LinearLayout>
+
+                <!-- Compact Bio Section -->
+                <TextView
+                    android:id="@+id/tvBio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Passionate nursing student dedicated to learning and helping others. Always eager to share knowledge and connect with fellow students."
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingTop="12dp"
+                    android:background="@drawable/bio_section_border" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Profile Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditProfile"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Edit Profile"
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewUserProfile"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="View User Profile"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Required drawable resources -->
+        <!--
+        academic_section_bg.xml:
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@color/light_background" />
+            <corners android:radius="12dp" />
+            <stroke android:width="4dp" android:color="@color/primary_color" />
+        </shape>
+
+        student_badge_bg.xml:
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@color/light_primary" />
+            <corners android:radius="12dp" />
+        </shape>
+
+        bio_section_border.xml:
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape android:shape="line">
+                    <stroke android:width="1dp" android:color="@color/light_gray" />
+                </shape>
+            </item>
+        </layer-list>
+
+        profile_gradient.xml:
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <gradient
+                android:startColor="@color/primary_color"
+                android:endColor="@color/primary_dark"
+                android:angle="135" />
+        </shape>
+        -->
+
+
+        <!-- Achievements Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Achievements Header (Always Visible) -->
+                <LinearLayout
+                    android:id="@+id/llAchievementsHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Achievements"
+                        android:textColor="@color/text_primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/ivAchievementsExpand"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_back"
+                        android:rotation="270"
+                        app:tint="@color/text_secondary" />
+
+                </LinearLayout>
+
+                <!-- Achievements Content (Collapsed by default) -->
+                <LinearLayout
+                    android:id="@+id/llAchievementsContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                <!-- Materials Count -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="12dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_document"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Materials Uploaded"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvMaterialsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/primary_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Downloads Count -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="12dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_download"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Total Downloads"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvDownloadsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/primary_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Average Rating -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="12dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_star_filled"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Average Rating"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAverageRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0"
+                        android:textColor="@color/primary_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Total Likes -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="12dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_favorite_filled"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Total Likes"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvTotalLikes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/primary_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+    </LinearLayout>
+
+</ScrollView> 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="8dp"
+    android:layout_marginEnd="12dp"
+    android:background="@android:color/transparent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_profile_placeholder"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/quick_connect_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nurse Name"
+        android:textSize="13sp"
+        android:textColor="#333333"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnQuickConnect"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Connect"
+        android:textSize="10sp"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#4285F4"
+        app:cornerRadius="8dp"
+        android:layout_marginTop="4dp"
+        style="@style/Widget.MaterialComponents.Button"/>
+
+</LinearLayout> 

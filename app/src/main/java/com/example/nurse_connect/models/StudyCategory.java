@@ -1,0 +1,17 @@
+package com.example.nurse_connect.models;
+
+public enum StudyCategory {
+    ANATOMY_PHYSIOLOGY,
+    PHARMACOLOGY,
+    CLINICAL_SKILLS,
+    PATHOPHYSIOLOGY,
+    MENTAL_HEALTH,
+    NURSING_FUNDAMENTALS,
+    MEDICAL_SURGICAL,
+    PEDIATRICS,
+    OBSTETRICS,
+    EMERGENCY_NURSING,
+    COMMUNITY_HEALTH,
+    RESEARCH_METHODS,
+    OTHER
+} 

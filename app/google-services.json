@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "666993226510",
+    "project_id": "nurseconnect-c68eb",
+    "storage_bucket": "nurseconnect-c68eb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666993226510:android:6f22e383f7c15916df1d5f",
+        "android_client_info": {
+          "package_name": "com.example.nurse_connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "666993226510-b3210e0d47cqd8eor2knc4irvb8djufi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nurse_connect",
+            "certificate_hash": "8bf7179d9b3cb5ddbdcd65e276cd82ce84dc7b1c"
+          }
+        },
+        {
+          "client_id": "666993226510-8qpvna5n1n27d6l1ur2tg33n6urhtlkc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCprFKN_cjpgWqBezEFccnYaIpupM_nDDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666993226510-8qpvna5n1n27d6l1ur2tg33n6urhtlkc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

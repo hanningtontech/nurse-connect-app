@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ========================================= -->
+    <!-- NIGHT THEME COLOR OVERRIDES              -->
+    <!-- ========================================= -->
+    
+    <!-- Primary Colors -->
+    <color name="theme_primary">#1A2B40</color>
+    <color name="theme_primary_variant">#34495E</color>
+    
+    <!-- Secondary Colors -->
+    <color name="theme_secondary">#1E8449</color>
+    <color name="theme_accent">#16A085</color>
+    
+    <!-- Action Colors -->
+    <color name="theme_action">#E67E22</color>
+    
+    <!-- Background Colors -->
+    <color name="theme_background">#121212</color>
+    <color name="theme_surface">#2C3E50</color>
+    <color name="theme_surface_variant">#34495E</color>
+    
+    <!-- Text Colors -->
+    <color name="theme_text_primary">#F8F9FA</color>
+    <color name="theme_text_secondary">#BDC3C7</color>
+    <color name="theme_text_on_primary">#F8F9FA</color>
+    <color name="theme_text_on_surface">#F8F9FA</color>
+    
+    <!-- Border and Divider Colors -->
+    <color name="theme_border">#34495E</color>
+    <color name="theme_divider">#2C3E50</color>
+    
+    <!-- Status Colors -->
+    <color name="theme_success">#1E8449</color>
+    <color name="theme_warning">#E67E22</color>
+    <color name="theme_error">#E74C3C</color>
+    
+    <!-- Chat Specific Colors -->
+    <color name="theme_chat_bubble_sent">#1A2B40</color>
+    <color name="theme_chat_bubble_received">#34495E</color>
+    <color name="theme_chat_input_background">#2C3E50</color>
+
+
+</resources>

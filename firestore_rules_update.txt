@@ -1,0 +1,38 @@
+// Add these rules to your Firestore Security Rules
+// Go to Firebase Console > Firestore Database > Rules
+// Add this to your existing rules:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Existing rules for other collections...
+    
+    // Rules for calls collection
+    match /calls/{callId} {
+      // Allow users to read calls where they are either caller or receiver
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.callerId || 
+         request.auth.uid == resource.data.receiverId);
+      
+      // Allow users to create calls where they are the caller
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.callerId;
+      
+      // Allow users to update calls where they are either caller or receiver
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.callerId || 
+         request.auth.uid == resource.data.receiverId);
+    }
+    
+    // Continue with your other existing rules...
+  }
+}
+
+// Instructions:
+// 1. Go to Firebase Console
+// 2. Select your project
+// 3. Go to Firestore Database
+// 4. Click on "Rules" tab
+// 5. Add the "calls" collection rules above to your existing rules
+// 6. Click "Publish" to save the changes

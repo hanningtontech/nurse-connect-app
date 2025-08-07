@@ -1,0 +1,35 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- ========================================= -->
+    <!-- NIGHT THEME OVERRIDES                    -->
+    <!-- ========================================= -->
+    <style name="Base.Theme.Nurse_Connect" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Material Components Color System for Dark Theme -->
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorPrimaryVariant">@color/theme_primary_variant</item>
+        <item name="colorSecondary">@color/theme_secondary</item>
+        <item name="colorSecondaryVariant">@color/theme_accent</item>
+        <item name="colorSurface">@color/theme_surface</item>
+        <item name="colorSurfaceVariant">@color/theme_surface_variant</item>
+        <item name="colorError">@color/theme_error</item>
+
+        <!-- Text Colors -->
+        <item name="colorOnPrimary">@color/theme_text_on_primary</item>
+        <item name="colorOnSecondary">@color/theme_text_on_primary</item>
+        <item name="colorOnSurface">@color/theme_text_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/theme_text_secondary</item>
+        <item name="colorOnError">@color/white</item>
+
+        <!-- Legacy AppCompat Colors -->
+        <item name="colorPrimaryDark">@color/theme_primary_variant</item>
+        <item name="colorAccent">@color/theme_secondary</item>
+
+        <!-- Background Colors -->
+        <item name="android:windowBackground">@color/theme_background</item>
+
+        <!-- Status Bar and Navigation Bar for Dark Theme -->
+        <item name="android:statusBarColor">@color/theme_primary</item>
+        <item name="android:navigationBarColor">@color/theme_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+    </style>
+</resources>

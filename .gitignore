@@ -1,0 +1,79 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle files
+.gradle/
+build/
+/build
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio files
+*.iml
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/dictionaries
+/.idea/gradle.xml
+/.idea/tasks.xml
+.idea/caches
+.idea/modules.xml
+
+# Log Files
+*.log
+
+# Android Studio captures folder
+/captures
+captures/
+
+# External native build folder
+.externalNativeBuild
+.cxx/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Firebase (keep google-services.json for now, but you might want to exclude it later)
+# google-services.json
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Proguard folder
+proguard/
+
+# Freeline
+freeline.py
+freeline/
+freeline_project_description.json
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md

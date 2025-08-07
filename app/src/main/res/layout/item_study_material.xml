@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:focusable="true"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/theme_surface"
+    app:strokeColor="@color/theme_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:id="@+id/documentallayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Section: Thumbnail + Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <!-- Document Thumbnail -->
+            <ImageView
+                android:id="@+id/ivDocumentThumbnail"
+                android:layout_width="60dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="12dp"
+                android:background="#F5F5F5"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                tools:src="@android:drawable/ic_menu_gallery" />
+
+            <!-- Content Section -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:text="HESI EXIT RN V4 COMPREHENSIVE NCLEX-STYLE Q &amp; A: NURSING CARE, PHARMACOLOGY, PEDIATRICS &amp; MED-SURG"
+                    android:textColor="#2196F3"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="4dp"
+                    tools:text="HESI EXIT RN V4 COMPREHENSIVE NCLEX-STYLE Q &amp; A: NURSING CARE, PHARMACOLOGY, PEDIATRICS &amp; MED-SURG" />
+
+                <!-- Rating and Price Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Star Rating -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvRatingStars"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="★★★★★"
+                            android:textColor="#EDBF00"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvRatingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="(0)"
+                            android:textColor="#757575"
+                            android:textSize="12sp"
+                            tools:text="(0)" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <!-- Price and Sales -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Free"
+                                android:textColor="#000000"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                tools:text="Free" />
+
+                            <TextView
+                                android:id="@+id/tvSales"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="0x downloaded"
+                                android:textColor="#757575"
+                                android:textSize="8sp"
+                                tools:text="0x downloaded" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvViews"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_gravity="end"
+                            android:text="0x viewed"
+                            android:textColor="#757575"
+                            android:textSize="8sp"
+                            tools:text="0x viewed" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="HESI EXIT RN V4 COMPREHENSIVE NCLEX-STYLE Q &amp; A: NURSING CARE, PHARMACOLOGY, PEDIATRICS &amp; MED-SURG"
+            android:textColor="#424242"
+            android:textSize="13sp"
+            tools:text="HESI EXIT RN V4 COMPREHENSIVE NCLEX-STYLE Q &amp; A: NURSING CARE, PHARMACOLOGY, PEDIATRICS &amp; MED-SURG" />
+
+        <!-- Exam Details -->
+        <TextView
+            android:id="@+id/tvExamDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Exam (elaborations) • 58 pages • uploaded 2025"
+            android:textColor="#757575"
+            android:textSize="10sp"
+            tools:text="Exam (elaborations) • 58 pages • uploaded 2025" />
+
+        <!-- Author Name (Clickable) -->
+        <TextView
+            android:id="@+id/tvAuthorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="by John Doe"
+            android:textColor="@color/primary_color"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="4dp"
+            tools:text="by John Doe" />
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Like/Favorite Button with Badge -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/btnLike"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_favorite_border"
+                    android:contentDescription="Add to Favorites"
+                    android:scaleType="centerInside"
+                    app:tint="#E91E63" />
+
+                <TextView
+                    android:id="@+id/tvLikeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/badge_background"
+                    android:minWidth="18dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="5"
+                    tools:visibility="visible" />
+
+            </FrameLayout>
+
+            <!-- Comments Button with Badge -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/btnComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_chat"
+                    android:contentDescription="Comments"
+                    android:scaleType="centerInside"
+                    app:tint="#2196F3" />
+
+                <TextView
+                    android:id="@+id/tvCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/badge_background"
+                    android:minWidth="18dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="3"
+                    tools:visibility="visible" />
+
+            </FrameLayout>
+
+            <!-- Rating Button -->
+            <ImageButton
+                android:id="@+id/btnRating"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_star"
+                android:contentDescription="Rate Document"
+                android:scaleType="centerInside"
+                app:tint="#EDBF00" />
+
+            <!-- Download Button -->
+            <ImageButton
+                android:id="@+id/btnDownload"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_download"
+                android:contentDescription="Download"
+                android:scaleType="centerInside"
+                app:tint="#4CAF50" />
+
+            <!-- Edit Button (Only visible to document owner) -->
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Edit Document"
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                app:tint="#2196F3" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+
