@@ -83,9 +83,56 @@ public class PermissionUtils {
      */
     public static void requestCameraPermission(Activity activity) {
         if (!hasCameraPermission(activity)) {
-            ActivityCompat.requestPermissions(activity, 
-                new String[]{Manifest.permission.CAMERA}, 
+            ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.CAMERA},
                 1002); // CAMERA_PERMISSION_REQUEST_CODE
+        }
+    }
+
+    /**
+     * Check if audio recording permission is granted
+     */
+    public static boolean hasAudioPermission(Context context) {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Request audio recording permission if not granted
+     */
+    public static void requestAudioPermission(Activity activity) {
+        if (!hasAudioPermission(activity)) {
+            ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                1003); // AUDIO_PERMISSION_REQUEST_CODE
+        }
+    }
+
+    /**
+     * Check if all WebRTC permissions are granted
+     */
+    public static boolean hasWebRTCPermissions(Context context) {
+        return hasAudioPermission(context) &&
+               ContextCompat.checkSelfPermission(context, Manifest.permission.MODIFY_AUDIO_SETTINGS) == PackageManager.PERMISSION_GRANTED &&
+               ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Request all WebRTC permissions if not granted
+     */
+    public static void requestWebRTCPermissions(Activity activity) {
+        List<String> permissions = new ArrayList<>();
+
+        if (!hasAudioPermission(activity)) {
+            permissions.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        }
+
+        if (!permissions.isEmpty()) {
+            ActivityCompat.requestPermissions(activity,
+                permissions.toArray(new String[0]),
+                1004); // WEBRTC_PERMISSION_REQUEST_CODE
         }
     }
     
@@ -109,6 +156,39 @@ public class PermissionUtils {
                     new String[]{Manifest.permission.POST_NOTIFICATIONS}, 
                     1003); // NOTIFICATION_PERMISSION_REQUEST_CODE
             }
+        }
+    }
+
+    /**
+     * Check if all video WebRTC permissions are granted
+     */
+    public static boolean hasVideoWebRTCPermissions(Context context) {
+        return hasWebRTCPermissions(context) && hasCameraPermission(context);
+    }
+
+    /**
+     * Request all video WebRTC permissions if not granted
+     */
+    public static void requestVideoWebRTCPermissions(Activity activity) {
+        List<String> permissions = new ArrayList<>();
+
+        // Add audio permissions
+        if (!hasAudioPermission(activity)) {
+            permissions.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        }
+
+        // Add camera permission
+        if (!hasCameraPermission(activity)) {
+            permissions.add(Manifest.permission.CAMERA);
+        }
+
+        if (!permissions.isEmpty()) {
+            ActivityCompat.requestPermissions(activity,
+                permissions.toArray(new String[0]),
+                1005); // VIDEO_WEBRTC_PERMISSION_REQUEST_CODE
         }
     }
 } 

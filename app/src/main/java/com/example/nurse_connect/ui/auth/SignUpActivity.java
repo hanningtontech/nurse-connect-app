@@ -8,6 +8,8 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -31,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class SignUpActivity extends AppCompatActivity {
     
@@ -40,8 +44,12 @@ public class SignUpActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     
     private TextInputEditText etEmail;
+    private TextInputEditText etPhoneNumber;
     private TextInputEditText etUsername;
     private TextInputEditText etDisplayName;
+    private AutoCompleteTextView spinnerNursingCareer;
+    private TextInputEditText etYearsExperience;
+    private TextInputEditText etCurrentInstitution;
     private TextInputEditText etSchool;
     private TextInputEditText etYear;
     private TextInputEditText etCourse;
@@ -58,6 +66,20 @@ public class SignUpActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> galleryLauncher;
     private ActivityResultLauncher<Intent> cropLauncher;
     
+    // Nursing career options
+    private static final List<String> NURSING_CAREERS = Arrays.asList(
+        "LPN / LVN",
+        "RN",
+        "NP",
+        "CNS",
+        "CRNA",
+        "CNM",
+        "Nursing Administrator",
+        "Nurse Educator",
+        "Public Health Nurse",
+        "Travel Nurse"
+    );
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         setupGoogleSignIn();
         setupUI();
+        setupNursingCareerSpinner();
         observeViewModel();
     }
     
@@ -113,6 +136,26 @@ public class SignUpActivity extends AppCompatActivity {
         setupValidation();
     }
     
+    private void setupNursingCareerSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            NURSING_CAREERS
+        );
+        
+        binding.spinnerNursingCareer.setAdapter(adapter);
+        
+        // Set default selection to first item
+        if (!NURSING_CAREERS.isEmpty()) {
+            binding.spinnerNursingCareer.setText(NURSING_CAREERS.get(0), false);
+        }
+        
+        // Add validation for career selection
+        binding.spinnerNursingCareer.setOnItemClickListener((parent, view, position, id) -> {
+            validateNursingCareer();
+        });
+    }
+    
     private void setupValidation() {
         // Email validation
         binding.etEmail.addTextChangedListener(new TextWatcher() {
@@ -122,6 +165,20 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateEmail();
+            }
+            
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        
+        // Phone number validation
+        binding.etPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validatePhoneNumber();
             }
             
             @Override
@@ -155,6 +212,20 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+        
+        // Confirm password validation
+        binding.etConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateConfirmPassword();
+            }
+            
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
     
     private void validateEmail() {
@@ -165,6 +236,19 @@ public class SignUpActivity extends AppCompatActivity {
             binding.etEmail.setError("Invalid email format");
         } else {
             binding.etEmail.setError(null);
+        }
+    }
+    
+    private void validatePhoneNumber() {
+        String phone = binding.etPhoneNumber.getText().toString().trim();
+        if (phone.isEmpty()) {
+            binding.etPhoneNumber.setError("Phone number is required");
+        } else if (phone.length() < 10) {
+            binding.etPhoneNumber.setError("Phone number must be at least 10 digits");
+        } else if (!phone.matches("^[+]?[0-9\\s\\-\\(\\)]+$")) {
+            binding.etPhoneNumber.setError("Invalid phone number format");
+        } else {
+            binding.etPhoneNumber.setError(null);
         }
     }
     
@@ -232,30 +316,91 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
     
+    private void validateConfirmPassword() {
+        String password = binding.etPassword.getText().toString();
+        String confirmPassword = binding.etConfirmPassword.getText().toString();
+        
+        if (confirmPassword.isEmpty()) {
+            binding.etConfirmPassword.setError("Please confirm your password");
+        } else if (!password.equals(confirmPassword)) {
+            binding.etConfirmPassword.setError("Passwords do not match");
+        } else {
+            binding.etConfirmPassword.setError(null);
+        }
+    }
+    
+    private void validateNursingCareer() {
+        String selectedCareer = binding.spinnerNursingCareer.getText().toString().trim();
+        if (selectedCareer.isEmpty() || !NURSING_CAREERS.contains(selectedCareer)) {
+            binding.spinnerNursingCareer.setError("Please select a nursing career");
+        } else {
+            binding.spinnerNursingCareer.setError(null);
+        }
+    }
+    
+    private boolean validateAllFields() {
+        boolean isValid = true;
+        
+        // Validate required fields
+        validateEmail();
+        validatePhoneNumber();
+        validateUsername();
+        validatePassword();
+        validateConfirmPassword();
+        validateNursingCareer();
+        
+        // Check if any field has errors
+        if (binding.etEmail.getError() != null ||
+            binding.etPhoneNumber.getError() != null ||
+            binding.etUsername.getError() != null ||
+            binding.etPassword.getError() != null ||
+            binding.etConfirmPassword.getError() != null ||
+            binding.spinnerNursingCareer.getError() != null) {
+            isValid = false;
+        }
+        
+        // Check required field values
+        if (binding.etEmail.getText().toString().trim().isEmpty() ||
+            binding.etPhoneNumber.getText().toString().trim().isEmpty() ||
+            binding.etUsername.getText().toString().trim().isEmpty() ||
+            binding.etDisplayName.getText().toString().trim().isEmpty() ||
+            binding.etPassword.getText().toString().isEmpty() ||
+            binding.etConfirmPassword.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+        
+        // Check terms and conditions
+        if (!binding.cbTerms.isChecked()) {
+            Toast.makeText(this, "Please accept the terms and conditions", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
     private void createAccount() {
+        if (!validateAllFields()) {
+            return;
+        }
+        
         String email = binding.etEmail.getText().toString().trim();
+        String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
         String username = binding.etUsername.getText().toString().trim();
         String password = binding.etPassword.getText().toString();
         String confirmPassword = binding.etConfirmPassword.getText().toString();
         String displayName = binding.etDisplayName.getText().toString().trim();
+        String nursingCareer = binding.spinnerNursingCareer.getText().toString().trim();
+        String yearsExperience = binding.etYearsExperience.getText().toString().trim();
+        String currentInstitution = binding.etCurrentInstitution.getText().toString().trim();
         String school = binding.etSchool.getText().toString().trim();
         String year = binding.etYear.getText().toString().trim();
         String course = binding.etCourse.getText().toString().trim();
         String description = binding.etDescription.getText().toString().trim();
         
-        // Validation
-        if (email.isEmpty() || username.isEmpty() || password.isEmpty() || displayName.isEmpty()) {
-            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
+        // Final password match validation
         if (!password.equals(confirmPassword)) {
             binding.etConfirmPassword.setError("Passwords do not match");
-            return;
-        }
-        
-        if (!binding.cbTerms.isChecked()) {
-            Toast.makeText(this, "Please accept the terms and conditions", Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -278,10 +423,12 @@ public class SignUpActivity extends AppCompatActivity {
                         // Create account with profile picture and handle
                         if (selectedImageUri != null) {
                             // Upload image first, then create account
-                            uploadProfilePictureAndCreateAccount(email, username, password, displayName, school, year, course, description, uniqueHandle);
+                            uploadProfilePictureAndCreateAccount(email, phoneNumber, username, password, displayName, 
+                                nursingCareer, yearsExperience, currentInstitution, school, year, course, description, uniqueHandle);
                         } else {
                             // Create account without profile picture
-                            authViewModel.signUpWithEmail(email, password, username, displayName, school, year, course, description, null, uniqueHandle);
+                            authViewModel.signUpWithEmail(email, password, username, displayName, phoneNumber,
+                                nursingCareer, yearsExperience, currentInstitution, school, year, course, description, null, uniqueHandle);
                         }
                     }
                 });
@@ -289,8 +436,9 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
     
-    private void uploadProfilePictureAndCreateAccount(String email, String username, String password, 
-                                                    String displayName, String school, String year, 
+    private void uploadProfilePictureAndCreateAccount(String email, String phoneNumber, String username, String password, 
+                                                    String displayName, String nursingCareer, String yearsExperience,
+                                                    String currentInstitution, String school, String year, 
                                                     String course, String description, String handle) {
         // Show loading
         binding.progressBar.setVisibility(View.VISIBLE);
@@ -302,7 +450,8 @@ public class SignUpActivity extends AppCompatActivity {
             public void onSuccess(String downloadUrl) {
                 // Create account with profile picture URL and handle
                 runOnUiThread(() -> {
-                    authViewModel.signUpWithEmail(email, password, username, displayName, school, year, course, description, downloadUrl, handle);
+                    authViewModel.signUpWithEmail(email, password, username, displayName, phoneNumber,
+                        nursingCareer, yearsExperience, currentInstitution, school, year, course, description, downloadUrl, handle);
                 });
             }
             

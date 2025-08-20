@@ -86,8 +86,20 @@ public class StudyHubFragment extends Fragment implements StudyMaterialAdapter.O
         // Setup category spinner
         setupCategorySpinner();
         
+        // Load study mode avatar
+        loadStudyModeAvatar();
+        
+        // Setup avatar click listener
+        setupAvatarClickListener();
+
 
         
+        // Setup reset progress button
+        setupResetProgressButton();
+        
+        // Setup quick reset streak button
+        setupQuickResetStreakButton();
+
         // Search functionality - TextInputEditText with expandable design
         binding.searchView.setOnEditorActionListener((v, actionId, event) -> {
             String searchQuery = binding.searchView.getText().toString().trim();
@@ -940,6 +952,89 @@ public class StudyHubFragment extends Fragment implements StudyMaterialAdapter.O
             public void onFailure(Exception e) {
                 Toast.makeText(getContext(), "User not found: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+    
+    private void loadStudyModeAvatar() {
+        // Load the study mode nurse avatar
+        String studyModeAvatarUrl = "https://firebasestorage.googleapis.com/v0/b/nurseconnect-c68eb.firebasestorage.app/o/nursing-avatars%2FStudy%20mode_nurse.png?alt=media&token=b644dad1-997a-46d0-8e37-a76da4173e42";
+        
+        Log.d("StudyHubFragment", "Loading study mode avatar from: " + studyModeAvatarUrl);
+        
+        if (binding.ivStudyModeAvatar != null) {
+            Glide.with(requireContext())
+                 .load(studyModeAvatarUrl)
+                 .transition(DrawableTransitionOptions.withCrossFade())
+                 .placeholder(R.drawable.ic_person)
+                 .error(R.drawable.ic_person)
+                 .circleCrop()
+                 .listener(new com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable>() {
+                     @Override
+                     public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, boolean isFirstResource) {
+                         Log.e("StudyHubFragment", "Failed to load study mode avatar: " + (e != null ? e.getMessage() : "Unknown error"));
+                         return false;
+                     }
+
+                     @Override
+                     public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                         Log.d("StudyHubFragment", "Study mode avatar loaded successfully");
+                         return false;
+                     }
+                 })
+                 .into(binding.ivStudyModeAvatar);
+        } else {
+            Log.e("StudyHubFragment", "Study mode avatar ImageView is null");
+        }
+    }
+
+    private void setupAvatarClickListener() {
+        binding.ivStudyModeAvatar.setOnClickListener(v -> {
+            // Show a motivational study message when avatar is clicked
+            Toast.makeText(requireContext(), "Ready to study! 📚💪", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
+    
+    private void setupResetProgressButton() {
+        binding.btnResetProgress.setOnClickListener(v -> {
+            // Show confirmation dialog
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Reset Study Progress")
+                .setMessage("Are you sure you want to reset all your study progress? This will start your streak counter from day 1 and clear all completed sets. This action cannot be undone.")
+                .setPositiveButton("Reset", (dialog, which) -> {
+                    // Initialize StudyProgressManager and reset progress
+                    com.example.nurse_connect.services.StudyProgressManager studyProgressManager = 
+                        new com.example.nurse_connect.services.StudyProgressManager(requireContext());
+                    
+                    // First reset all progress data
+                    studyProgressManager.resetProgress();
+                    
+                    // Then force reset the first study date to start counting from today
+                    studyProgressManager.resetFirstStudyDate();
+                    
+                    Toast.makeText(requireContext(), "Progress reset successfully! Starting fresh from today.", Toast.LENGTH_LONG).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+        });
+    }
+    
+    private void setupQuickResetStreakButton() {
+        binding.btnQuickResetStreak.setOnClickListener(v -> {
+            new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Quick Reset Streak")
+                .setMessage("Are you sure you want to reset your study streak counter? This will only clear the current streak, not all progress.")
+                .setPositiveButton("Reset", (dialog, which) -> {
+                    com.example.nurse_connect.services.StudyProgressManager studyProgressManager = 
+                        new com.example.nurse_connect.services.StudyProgressManager(requireContext());
+                                         studyProgressManager.quickResetStreak();
+                    Toast.makeText(requireContext(), "Streak reset successfully!", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
         });
     }
     

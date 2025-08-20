@@ -17,6 +17,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
+        maven { url = uri("https://maven.google.com") }
+        @Suppress("DEPRECATION")
+        jcenter() // Needed for WebRTC library
     }
 }
 

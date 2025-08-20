@@ -2,21 +2,34 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     // Profile pictures - Allow users to upload and read their own profile pictures
+    // Security: Add file size limit (5MB) and type validation
     match /profile_pictures/{userId}/{allPaths=**} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && 
+        request.auth.uid == userId &&
+        request.resource.size <= 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/(jpeg|jpg|png|webp)');
     }
     
     // Profile images (alternative path for backward compatibility)
+    // Security: Add file size limit (5MB) and type validation
     match /profile_images/{userId}/{allPaths=**} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && 
+        request.auth.uid == userId &&
+        request.resource.size <= 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/(jpeg|jpg|png|webp)');
     }
     
     // Profile images with timestamp format (used by CommunityProfileService)
+    // Security: Only allow users to upload files with their UID in filename
     match /profile_images/{fileName} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && 
+        (fileName.matches('.*_' + request.auth.uid + '\\.(jpg|jpeg|png|webp)$') ||
+         fileName.matches('^' + request.auth.uid + '_.*\\.(jpg|jpeg|png|webp)$')) &&
+        request.resource.size <= 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/(jpeg|jpg|png|webp)');
     }
     
     // Study materials - Allow authenticated users to upload, read, and delete
@@ -44,7 +57,11 @@ service firebase.storage {
       allow write: if request.auth != null;
     }
     
-
+    // Nursing avatars and wallpapers - Allow authenticated users to read
+    match /nursing-avatars/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
     
     // Default rule - deny all other access
     match /{allPaths=**} {

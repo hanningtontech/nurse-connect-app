@@ -1,0 +1,174 @@
+{
+  "questions": [
+    {
+      "questionId": "fund_001",
+      "question": "What is the normal range for adult blood pressure?",
+      "options": [
+        "90/60 - 120/80 mmHg",
+        "110/70 - 140/90 mmHg",
+        "100/60 - 130/85 mmHg",
+        "80/50 - 110/70 mmHg"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Normal adult blood pressure is less than 120/80 mmHg according to AHA guidelines.",
+      "course": "Fundamentals of Nursing",
+      "unit": "Unit 3: Assessment",
+      "specialization": "General Nursing",
+      "difficulty": "medium",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "fund_002",
+      "question": "Which vital sign is most important to monitor in a patient with chest pain?",
+      "options": [
+        "Temperature",
+        "Blood pressure and pulse",
+        "Respiratory rate",
+        "Oxygen saturation"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Blood pressure and pulse changes can indicate cardiac compromise and should be monitored closely.",
+      "course": "Fundamentals of Nursing",
+      "unit": "Unit 4: Interventions",
+      "specialization": "Critical Care",
+      "difficulty": "medium",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "medsurg_001",
+      "question": "What is the most common cause of hospital-acquired infections?",
+      "options": [
+        "Poor hand hygiene",
+        "Contaminated equipment",
+        "Airborne pathogens",
+        "Infected visitors"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Poor hand hygiene is the leading cause of healthcare-associated infections.",
+      "course": "Medical-Surgical Nursing",
+      "unit": "Unit 2: Basic Concepts",
+      "specialization": "General Nursing",
+      "difficulty": "easy",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "medsurg_002",
+      "question": "Which laboratory value is most concerning in a patient with acute myocardial infarction?",
+      "options": [
+        "Elevated troponin",
+        "Decreased hemoglobin",
+        "Elevated white blood cells",
+        "Decreased platelets"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Elevated troponin levels are the gold standard for diagnosing myocardial infarction.",
+      "course": "Medical-Surgical Nursing",
+      "unit": "Unit 5: Evaluation",
+      "specialization": "Cardiology",
+      "difficulty": "medium",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "peds_001",
+      "question": "At what age should a child be able to walk independently?",
+      "options": [
+        "9-10 months",
+        "12-15 months",
+        "18-20 months",
+        "24-30 months"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Most children begin walking independently between 12-15 months of age.",
+      "course": "Pediatric Nursing",
+      "unit": "Unit 1: Introduction",
+      "specialization": "Pediatrics",
+      "difficulty": "easy",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "peds_002",
+      "question": "What is the most appropriate pain assessment tool for a 4-year-old child?",
+      "options": [
+        "Numeric rating scale (0-10)",
+        "FACES pain scale",
+        "Visual analog scale",
+        "Behavioral pain scale"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "The FACES pain scale is most appropriate for preschool children who can identify emotions but may not understand numbers.",
+      "course": "Pediatric Nursing",
+      "unit": "Unit 3: Assessment",
+      "specialization": "Pediatrics",
+      "difficulty": "medium",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "psych_001",
+      "question": "What is the priority nursing intervention for a patient experiencing a panic attack?",
+      "options": [
+        "Administer prescribed anxiolytic",
+        "Stay with the patient and provide reassurance",
+        "Encourage deep breathing exercises",
+        "Move patient to a quiet environment"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Staying with the patient and providing reassurance helps establish safety and trust during a panic attack.",
+      "course": "Psychiatric Nursing",
+      "unit": "Unit 4: Interventions",
+      "specialization": "Mental Health",
+      "difficulty": "medium",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "critical_001",
+      "question": "What is the normal range for central venous pressure (CVP)?",
+      "options": [
+        "2-8 mmHg",
+        "8-12 mmHg",
+        "12-18 mmHg",
+        "18-25 mmHg"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Normal CVP range is 2-8 mmHg, reflecting right heart filling pressures.",
+      "course": "Critical Care Nursing",
+      "unit": "Unit 3: Assessment",
+      "specialization": "Critical Care",
+      "difficulty": "hard",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "emergency_001",
+      "question": "In the primary survey (ABCDE), what does 'C' represent?",
+      "options": [
+        "Circulation",
+        "Cervical spine",
+        "Consciousness",
+        "Cardiac rhythm"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "In the ABCDE primary survey, 'C' stands for Circulation with hemorrhage control.",
+      "course": "Emergency Nursing",
+      "unit": "Unit 2: Basic Concepts",
+      "specialization": "Emergency Care",
+      "difficulty": "easy",
+      "timeLimit": 30
+    },
+    {
+      "questionId": "community_001",
+      "question": "What is the primary focus of community health nursing?",
+      "options": [
+        "Individual patient care",
+        "Hospital-based interventions",
+        "Population health promotion",
+        "Acute care management"
+      ],
+      "correctAnswerIndex": 2,
+      "explanation": "Community health nursing focuses on promoting health and preventing disease in populations and communities.",
+      "course": "Community Health Nursing",
+      "unit": "Unit 1: Introduction",
+      "specialization": "Community Health",
+      "difficulty": "easy",
+      "timeLimit": 30
+    }
+  ]
+}

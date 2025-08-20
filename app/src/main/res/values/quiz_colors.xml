@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Quiz-specific colors -->
+    <color name="quiz_correct">#4CAF50</color>
+    <color name="quiz_incorrect">#F44336</color>
+    <color name="quiz_option_default">#FFFFFF</color>
+    <color name="quiz_option_disabled">#F5F5F5</color>
+    <color name="quiz_text_default">#212121</color>
+    <color name="quiz_text_disabled">#9E9E9E</color>
+    <color name="quiz_timer_normal">#2196F3</color>
+    <color name="quiz_timer_warning">#FF9800</color>
+    <color name="quiz_timer_danger">#F44336</color>
+    
+    <!-- Rank colors -->
+    <color name="rank_bronze">#CD7F32</color>
+    <color name="rank_silver">#C0C0C0</color>
+    <color name="rank_gold">#FFD700</color>
+    <color name="rank_platinum">#E5E4E2</color>
+    <color name="rank_diamond">#B9F2FF</color>
+</resources>

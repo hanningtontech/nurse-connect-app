@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.nurse_connect.R;
+import com.example.nurse_connect.utils.PermissionUtils;
 import com.example.nurse_connect.webrtc.RealTimeAudioManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,8 +72,14 @@ public class AudioCallActivity extends AppCompatActivity implements
     private RealTimeAudioManager realTimeAudioManager;
     private boolean isAudioInitialized = false;
 
+    // Call timeout and waiting audio
+    private static final long CALL_TIMEOUT_MS = 45000; // 45 seconds
+    private Handler timeoutHandler;
+    private Runnable timeoutRunnable;
+    private MediaPlayer waitingAudioPlayer;
+
     // Call states
-    private enum CallState {
+    public enum CallState {
         CALLING, RINGING, CONNECTED, ENDED
     }
     private CallState currentCallState = CallState.CALLING;
@@ -88,9 +95,18 @@ public class AudioCallActivity extends AppCompatActivity implements
         initializeViews();
         initializeFirebase();
         getIntentData();
+
+        // Check WebRTC permissions before proceeding
+        if (!PermissionUtils.hasWebRTCPermissions(this)) {
+            PermissionUtils.requestWebRTCPermissions(this);
+            return;
+        }
+
         setupCallInterface();
         setupClickListeners();
-        
+
+        android.util.Log.d("AudioCallActivity", "Starting call activity - isOutgoing: " + isOutgoing + ", callId: " + callId);
+
         if (isOutgoing) {
             initiateOutgoingCall();
         } else {
@@ -124,6 +140,16 @@ public class AudioCallActivity extends AppCompatActivity implements
         otherUserName = getIntent().getStringExtra("otherUserName");
         isOutgoing = getIntent().getBooleanExtra("isOutgoing", true);
         callId = getIntent().getStringExtra("callId"); // For incoming calls
+        
+        android.util.Log.d("AudioCallActivity", "Intent data - otherUserId: " + otherUserId + ", otherUserName: " + otherUserName + ", isOutgoing: " + isOutgoing + ", callId: " + callId);
+        
+        // Validate required data
+        if (otherUserId == null) {
+            android.util.Log.e("AudioCallActivity", "Missing otherUserId in intent");
+            Toast.makeText(this, "Call error: Missing user information", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
     }
 
     private void setupCallInterface() {
@@ -159,8 +185,7 @@ public class AudioCallActivity extends AppCompatActivity implements
         muteButton.setOnClickListener(v -> toggleMute());
         speakerButton.setOnClickListener(v -> toggleSpeaker());
         endCallButton.setOnClickListener(v -> endCall());
-        acceptButton.setOnClickListener(v -> acceptCall());
-        declineButton.setOnClickListener(v -> declineCall());
+        // Removed accept/decline button listeners since calls are now automatic
     }
 
     private void initiateOutgoingCall() {
@@ -171,17 +196,40 @@ public class AudioCallActivity extends AppCompatActivity implements
         incomingCallSection.setVisibility(View.GONE);
         bottomSection.setVisibility(View.VISIBLE);
 
-        // DON'T play ringtone on caller's side - only receiver should ring
-        // playRingtone();
+        // Start waiting audio for caller
+        playWaitingAudio();
 
-        // Initialize real-time audio for caller
-        initializeAudio();
+        // Start call timeout (45 seconds)
+        startCallTimeout();
 
         // Send call notification to other user
         sendCallNotification();
+    }
 
-        // Listen for call status changes (when other user accepts/declines)
-        listenForCallStatusChanges();
+    private void waitForCallDocument() {
+        if (currentUser == null || otherUserId == null) return;
+
+        // Listen for the call document to be created
+        db.collection("calls")
+                .whereEqualTo("callerId", currentUser.getUid())
+                .whereEqualTo("receiverId", otherUserId)
+                .whereEqualTo("status", "calling")
+                .limit(1)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        android.util.Log.e("AudioCallActivity", "Error waiting for call document", error);
+                        return;
+                    }
+
+                    if (value != null && !value.isEmpty()) {
+                        DocumentSnapshot document = value.getDocuments().get(0);
+                        callId = document.getId();
+                        android.util.Log.d("AudioCallActivity", "Call document found with ID: " + callId);
+                        
+                        // Don't initialize audio yet - wait for receiver to accept
+                        // The WebRTC connection will be established after the receiver accepts
+                    }
+                });
     }
 
     private void setupIncomingCall() {
@@ -193,25 +241,36 @@ public class AudioCallActivity extends AppCompatActivity implements
         bottomSection.setVisibility(View.GONE);
         
         // Play ringtone
+        
+        // Start listening for call status changes (for incoming calls)
+        listenForCallStatusChanges();
+        
         playRingtone();
     }
 
     private void acceptCall() {
         stopRingtone();
 
-        // Initialize real-time audio for receiver
-        initializeAudio();
-
         // Update call status to accepted in Firestore
         if (callId != null) {
             db.collection("calls")
                     .document(callId)
                     .update("status", "accepted")
-                    .addOnSuccessListener(aVoid -> android.util.Log.d("AudioCallActivity", "Call accepted in Firestore"))
-                    .addOnFailureListener(e -> android.util.Log.e("AudioCallActivity", "Failed to accept call in Firestore", e));
+                    .addOnSuccessListener(aVoid -> {
+                        android.util.Log.d("AudioCallActivity", "Call accepted in Firestore - waiting for status listener to handle connection");
+                        // Don't call connectCall() here - let the status listener handle it
+                        // This prevents race conditions and ensures proper flow
+                    })
+                    .addOnFailureListener(e -> {
+                        android.util.Log.e("AudioCallActivity", "Failed to accept call in Firestore", e);
+                        Toast.makeText(this, "Failed to accept call", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+        } else {
+            android.util.Log.e("AudioCallActivity", "CallId is null, cannot accept call");
+            Toast.makeText(this, "Call error", Toast.LENGTH_SHORT).show();
+            finish();
         }
-
-        connectCall();
     }
 
     private void declineCall() {
@@ -222,68 +281,126 @@ public class AudioCallActivity extends AppCompatActivity implements
             db.collection("calls")
                     .document(callId)
                     .update("status", "declined")
-                    .addOnSuccessListener(aVoid -> android.util.Log.d("AudioCallActivity", "Call declined in Firestore"))
-                    .addOnFailureListener(e -> android.util.Log.e("AudioCallActivity", "Failed to decline call in Firestore", e));
+                    .addOnSuccessListener(aVoid -> {
+                        android.util.Log.d("AudioCallActivity", "Call declined in Firestore");
+                        endCall();
+                    })
+                    .addOnFailureListener(e -> {
+                        android.util.Log.e("AudioCallActivity", "Failed to decline call in Firestore", e);
+                        endCall();
+                    });
+        } else {
+            endCall();
         }
-
-        endCall();
     }
 
     private void connectCall() {
-        currentCallState = CallState.CONNECTED;
+        if (isCallActive) {
+            android.util.Log.d("AudioCallActivity", "connectCall() called but call is already active, skipping...");
+            return;
+        }
+
+        android.util.Log.d("AudioCallActivity", "Connecting call... - isOutgoing: " + isOutgoing + ", callId: " + callId);
         isCallActive = true;
+        currentCallState = CallState.CONNECTED;
         callStartTime = System.currentTimeMillis();
 
-        stopRingtone();
-        callStatus.setText("Connected");
-
-        // Show call controls
+        // Update UI for connected state
         incomingCallSection.setVisibility(View.GONE);
         bottomSection.setVisibility(View.VISIBLE);
-        callDuration.setVisibility(View.VISIBLE);
+        callStatus.setText("Connected");
+
+        // Stop ringtone if playing
+        stopRingtone();
+
+        // Stop waiting audio and timeout
+        stopWaitingAudio();
+        stopCallTimeout();
+
+        // Initialize and start WebRTC audio
+        initializeAudio();
 
         // Start call duration timer
         startCallDurationTimer();
 
-        // Start real-time audio if not already done
-        if (!isAudioInitialized) {
-            initializeAudio();
-        }
+        // Update call status in Firestore
+        if (callId != null) {
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("status", "connected");
+            updateData.put("connectedTime", System.currentTimeMillis());
 
-        // Start the audio call
-        if (realTimeAudioManager != null) {
-            realTimeAudioManager.startCall();
+            db.collection("calls").document(callId).update(updateData)
+                    .addOnSuccessListener(aVoid -> {
+                        android.util.Log.d("AudioCallActivity", "Call status updated to connected");
+                    })
+                    .addOnFailureListener(e -> {
+                        android.util.Log.e("AudioCallActivity", "Failed to update call status", e);
+                    });
         }
-
-        Toast.makeText(this, "Call connected - Audio channel active", Toast.LENGTH_SHORT).show();
     }
 
     private void endCall() {
+        android.util.Log.d("AudioCallActivity", "Ending call...");
+        
+        // Prevent multiple calls to endCall
+        if (currentCallState == CallState.ENDED) {
+            android.util.Log.d("AudioCallActivity", "Call already ended, skipping endCall()");
+            return;
+        }
+        
+        // Set state to ENDED immediately to prevent circular calls
         currentCallState = CallState.ENDED;
         isCallActive = false;
-
+        
+        // Stop ringtone if playing
         stopRingtone();
+        
+        // Stop waiting audio and timeout
+        stopWaitingAudio();
+        stopCallTimeout();
+        
+        // Stop call duration timer
         stopCallDurationTimer();
-
-        // Cleanup audio resources
-        cleanupAudio();
-
-        // Update call status in Firestore
-        if (callId != null) {
-            db.collection("calls")
-                    .document(callId)
-                    .update("status", "ended")
-                    .addOnSuccessListener(aVoid -> android.util.Log.d("AudioCallActivity", "Call ended in Firestore"))
-                    .addOnFailureListener(e -> android.util.Log.e("AudioCallActivity", "Failed to end call in Firestore", e));
+        
+        // Clean up WebRTC resources properly
+        if (realTimeAudioManager != null) {
+            android.util.Log.d("AudioCallActivity", "Ending WebRTC call");
+            realTimeAudioManager.endCall();
+            realTimeAudioManager.cleanup();
+            realTimeAudioManager = null;
         }
+        
+        isAudioInitialized = false;
+        
+        // Update call status in Firestore to ended
+        if (callId != null) {
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("status", "ended");
+            updateData.put("endTime", System.currentTimeMillis());
+            updateData.put("duration", callStartTime > 0 ? System.currentTimeMillis() - callStartTime : 0);
 
-        // Clean up listener
+            db.collection("calls").document(callId).update(updateData)
+                    .addOnSuccessListener(aVoid -> {
+                        android.util.Log.d("AudioCallActivity", "Call ended in Firestore");
+                    })
+                    .addOnFailureListener(e -> {
+                        android.util.Log.e("AudioCallActivity", "Failed to update call end status", e);
+                    });
+        }
+        
+        // Clean up call status listener
         if (callStatusListener != null) {
             callStatusListener.remove();
+            callStatusListener = null;
         }
-
-        Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show();
-        finish();
+        
+        // Show call ended message briefly
+        callStatus.setText("Call ended");
+        
+        // Close activity after a short delay
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            finish();
+        }, 1500);
     }
 
     private void toggleMute() {
@@ -356,10 +473,65 @@ public class AudioCallActivity extends AppCompatActivity implements
     }
 
     private void stopRingtone() {
-        if (ringtonePlayer != null) {
+        if (ringtonePlayer != null && ringtonePlayer.isPlaying()) {
             ringtonePlayer.stop();
             ringtonePlayer.release();
             ringtonePlayer = null;
+        }
+    }
+
+    private void playWaitingAudio() {
+        if (waitingAudioPlayer != null) {
+            waitingAudioPlayer.release();
+        }
+        
+        try {
+            waitingAudioPlayer = new MediaPlayer();
+            // You can replace this with a custom waiting audio file
+            // For now, we'll use a simple beep sound
+            waitingAudioPlayer.setDataSource(this, android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+            waitingAudioPlayer.setLooping(true);
+            waitingAudioPlayer.prepare();
+            waitingAudioPlayer.start();
+            android.util.Log.d("AudioCallActivity", "Waiting audio started");
+        } catch (Exception e) {
+            android.util.Log.e("AudioCallActivity", "Failed to play waiting audio", e);
+        }
+    }
+
+    private void stopWaitingAudio() {
+        if (waitingAudioPlayer != null && waitingAudioPlayer.isPlaying()) {
+            waitingAudioPlayer.stop();
+            waitingAudioPlayer.release();
+            waitingAudioPlayer = null;
+            android.util.Log.d("AudioCallActivity", "Waiting audio stopped");
+        }
+    }
+
+    private void startCallTimeout() {
+        if (timeoutHandler != null) {
+            timeoutHandler.removeCallbacks(timeoutRunnable);
+        }
+        
+        timeoutHandler = new Handler(Looper.getMainLooper());
+        timeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                android.util.Log.d("AudioCallActivity", "Call timeout reached (45 seconds)");
+                callStatus.setText("Call timeout - No answer");
+                Toast.makeText(AudioCallActivity.this, "Call timed out - No answer", Toast.LENGTH_SHORT).show();
+                endCall();
+            }
+        };
+        
+        timeoutHandler.postDelayed(timeoutRunnable, CALL_TIMEOUT_MS);
+        android.util.Log.d("AudioCallActivity", "Call timeout started (45 seconds)");
+    }
+
+    private void stopCallTimeout() {
+        if (timeoutHandler != null && timeoutRunnable != null) {
+            timeoutHandler.removeCallbacks(timeoutRunnable);
+            android.util.Log.d("AudioCallActivity", "Call timeout stopped");
         }
     }
 
@@ -373,6 +545,7 @@ public class AudioCallActivity extends AppCompatActivity implements
         callData.put("type", "audio_call");
         callData.put("status", "calling");
         callData.put("timestamp", System.currentTimeMillis());
+        callData.put("startTime", System.currentTimeMillis()); // Add startTime for notification service
 
         android.util.Log.d("AudioCallActivity", "Creating call from " + currentUser.getUid() + " to " + otherUserId);
 
@@ -382,6 +555,9 @@ public class AudioCallActivity extends AppCompatActivity implements
                 .addOnSuccessListener(documentReference -> {
                     callId = documentReference.getId();
                     android.util.Log.d("AudioCallActivity", "Call created with ID: " + callId);
+                    
+                    // Start listening for call status changes after call is created
+                    listenForCallStatusChanges();
                 })
                 .addOnFailureListener(e -> {
                     android.util.Log.e("AudioCallActivity", "Failed to create call", e);
@@ -394,6 +570,8 @@ public class AudioCallActivity extends AppCompatActivity implements
         // Wait a moment for callId to be set
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (callId != null) {
+                android.util.Log.d("AudioCallActivity", "Starting to listen for call status changes for callId: " + callId);
+                
                 callStatusListener = db.collection("calls")
                         .document(callId)
                         .addSnapshotListener((snapshot, error) -> {
@@ -404,18 +582,54 @@ public class AudioCallActivity extends AppCompatActivity implements
 
                             if (snapshot != null && snapshot.exists()) {
                                 String status = snapshot.getString("status");
-                                android.util.Log.d("AudioCallActivity", "Call status changed to: " + status);
+                                android.util.Log.d("AudioCallActivity", "Call status changed to: " + status + " (current state: " + currentCallState + ", isOutgoing: " + isOutgoing + ")");
 
-                                if ("accepted".equals(status) && currentCallState == CallState.CALLING) {
-                                    connectCall();
-                                } else if ("declined".equals(status)) {
-                                    callStatus.setText("Call declined");
-                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                        endCall();
-                                    }, 2000);
+                                switch (status) {
+                                    case "accepted":
+                                        if (currentCallState == CallState.CALLING && isOutgoing) {
+                                            android.util.Log.d("AudioCallActivity", "Call accepted by receiver, connecting call...");
+                                            // Caller receives acceptance - now connect the call
+                                            connectCall();
+                                        } else if (currentCallState == CallState.RINGING && !isOutgoing) {
+                                            android.util.Log.d("AudioCallActivity", "Receiver: Call was accepted, connecting call...");
+                                            // Receiver: Call was accepted, connect the call
+                                            connectCall();
+                                        }
+                                        break;
+                                    case "declined":
+                                        android.util.Log.d("AudioCallActivity", "Call declined by receiver");
+                                        callStatus.setText("Call declined");
+                                        stopWaitingAudio();
+                                        stopCallTimeout();
+                                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                            endCall();
+                                        }, 2000);
+                                        break;
+                                    case "ended":
+                                        if (isCallActive || currentCallState != CallState.ENDED) {
+                                            android.util.Log.d("AudioCallActivity", "Call ended by other party");
+                                            callStatus.setText("Call ended by other party");
+                                            stopWaitingAudio();
+                                            stopCallTimeout();
+                                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                endCall();
+                                            }, 2000);
+                                        }
+                                        break;
+                                    case "connected":
+                                        // Both parties are now connected
+                                        if (currentCallState == CallState.CONNECTED) {
+                                            android.util.Log.d("AudioCallActivity", "Call fully connected");
+                                            callStatus.setText("Connected");
+                                        }
+                                        break;
                                 }
+                            } else {
+                                android.util.Log.w("AudioCallActivity", "Call document no longer exists");
                             }
                         });
+            } else {
+                android.util.Log.e("AudioCallActivity", "Cannot listen for call status - callId is null");
             }
         }, 1000);
     }
@@ -423,12 +637,23 @@ public class AudioCallActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        android.util.Log.d("AudioCallActivity", "Activity being destroyed");
+        
         stopRingtone();
+        stopWaitingAudio();
+        stopCallTimeout();
         stopCallDurationTimer();
 
         // Clean up call status listener
         if (callStatusListener != null) {
             callStatusListener.remove();
+            callStatusListener = null;
+        }
+
+        // Clean up audio resources if not already cleaned up
+        if (realTimeAudioManager != null) {
+            android.util.Log.d("AudioCallActivity", "Cleaning up audio resources in onDestroy");
+            cleanupAudio();
         }
 
         // Clear window flags
@@ -447,19 +672,40 @@ public class AudioCallActivity extends AppCompatActivity implements
 
     // Real-time audio initialization and management
     private void initializeAudio() {
-        if (isAudioInitialized) return;
+        if (isAudioInitialized) {
+            android.util.Log.d("AudioCallActivity", "Audio already initialized, skipping...");
+            return;
+        }
 
-        android.util.Log.d("AudioCallActivity", "Initializing real-time audio for call: " + callId);
+        android.util.Log.d("AudioCallActivity", "Initializing WebRTC audio for call: " + callId + " (isOutgoing: " + isOutgoing + ")");
 
-        // Initialize real-time audio manager
+        // Initialize real-time audio manager with WebRTC
         realTimeAudioManager = new RealTimeAudioManager(this, this);
+
+        // Set call parameters for WebRTC
+        if (callId != null && currentUser != null && otherUserId != null) {
+            realTimeAudioManager.setCallParameters(
+                callId,
+                currentUser.getUid(),
+                otherUserId,
+                isOutgoing
+            );
+            android.util.Log.d("AudioCallActivity", "WebRTC call parameters set - IsOutgoing: " + isOutgoing);
+            
+            // Start the WebRTC call after setting parameters
+            realTimeAudioManager.startCall();
+        } else {
+            android.util.Log.e("AudioCallActivity", "Missing call parameters for WebRTC initialization - callId: " + callId + ", currentUser: " + (currentUser != null ? currentUser.getUid() : "null") + ", otherUserId: " + otherUserId);
+        }
 
         isAudioInitialized = true;
     }
 
     private void cleanupAudio() {
+        android.util.Log.d("AudioCallActivity", "Cleaning up audio resources");
         if (realTimeAudioManager != null) {
-            realTimeAudioManager.endCall();
+            // Only cleanup, don't call endCall() to avoid circular calls
+            realTimeAudioManager.cleanup();
             realTimeAudioManager = null;
         }
 
@@ -470,7 +716,7 @@ public class AudioCallActivity extends AppCompatActivity implements
     @Override
     public void onCallConnected() {
         runOnUiThread(() -> {
-            android.util.Log.d("AudioCallActivity", "Real-time audio call connected - audio channel established");
+            android.util.Log.d("AudioCallActivity", "Real-time audio call connected - audio channel established - isCallActive: " + isCallActive + ", currentCallState: " + currentCallState);
             callStatus.setText("Connected - Audio Active");
             Toast.makeText(this, "Live audio channel established", Toast.LENGTH_SHORT).show();
         });
@@ -479,9 +725,13 @@ public class AudioCallActivity extends AppCompatActivity implements
     @Override
     public void onCallDisconnected() {
         runOnUiThread(() -> {
-            android.util.Log.d("AudioCallActivity", "Real-time audio call disconnected");
-            if (isCallActive) {
+            android.util.Log.d("AudioCallActivity", "Real-time audio call disconnected - isCallActive: " + isCallActive + ", currentCallState: " + currentCallState);
+            // Only end call if it's still active and we haven't already started ending it
+            if (isCallActive && currentCallState != CallState.ENDED) {
+                android.util.Log.d("AudioCallActivity", "Call was active, ending call due to disconnection");
                 endCall();
+            } else {
+                android.util.Log.d("AudioCallActivity", "Call already ended or not active, skipping endCall() - isCallActive: " + isCallActive + ", currentCallState: " + currentCallState);
             }
         });
     }
@@ -507,5 +757,36 @@ public class AudioCallActivity extends AppCompatActivity implements
             android.util.Log.e("AudioCallActivity", "Audio error: " + error);
             Toast.makeText(this, "Audio error: " + error, Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1004) { // WEBRTC_PERMISSION_REQUEST_CODE
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+
+            if (allPermissionsGranted) {
+                android.util.Log.d("AudioCallActivity", "WebRTC permissions granted, proceeding with call setup");
+                setupCallInterface();
+                setupClickListeners();
+
+                if (isOutgoing) {
+                    initiateOutgoingCall();
+                } else {
+                    setupIncomingCall();
+                }
+            } else {
+                android.util.Log.e("AudioCallActivity", "WebRTC permissions denied");
+                Toast.makeText(this, "Audio permissions are required for voice calls", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 }

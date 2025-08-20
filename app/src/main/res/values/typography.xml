@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ========================================= -->
+    <!-- MODERN MEDICAL QUIZ GAME TYPOGRAPHY      -->
+    <!-- ========================================= -->
+    
+    <!-- Text Appearances for Quiz Game -->
+    <style name="TextAppearance.Medical.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/medical_text_secondary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/medical_text_tertiary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+    
+    <!-- Special Quiz Game Text Styles -->
+    <style name="TextAppearance.Medical.Question" parent="TextAppearance.Medical.Headline3">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:padding">16dp</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Timer" parent="TextAppearance.Medical.Headline1">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/medical_timer_normal</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Score" parent="TextAppearance.Medical.Headline4">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/medical_surface</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+    
+    <style name="TextAppearance.Medical.Status" parent="TextAppearance.Medical.Body2">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/medical_text_secondary</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <!-- New style for answer options with smaller text -->
+    <style name="TextAppearance.Medical.AnswerOption" parent="TextAppearance.Medical.Body1">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/medical_text_primary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+
+</resources>

@@ -55,6 +55,8 @@ public class PrivateChatActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private com.google.firebase.firestore.ListenerRegistration messageListener;
     private com.google.firebase.firestore.ListenerRegistration messageStatusListener;
+    private com.google.firebase.firestore.ListenerRegistration callStatusListener;
+    private boolean isHandlingIncomingCall = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,17 @@ public class PrivateChatActivity extends AppCompatActivity {
             finish();
             return;
         }
+        
+        // Check if this is a quiz invitation
+        boolean isQuizInvitation = getIntent().getBooleanExtra("quiz_invitation", false);
+        if (isQuizInvitation) {
+            String matchId = getIntent().getStringExtra("match_id");
+            String invitationMessage = getIntent().getStringExtra("invitation_message");
+            if (matchId != null && invitationMessage != null) {
+                // Send the quiz invitation message automatically
+                sendQuizInvitationMessage(matchId, invitationMessage);
+            }
+        }
 
         setupUI();
         setupRecyclerView();
@@ -91,11 +104,21 @@ public class PrivateChatActivity extends AppCompatActivity {
         // Load cached messages first for instant display, then set up real-time listener
         loadCachedMessagesFirst();
         setupMessageListener();
+        
+        // Setup call status monitoring
+        setupCallStatusMonitoring();
     }
 
     private void setupUI() {
         // Setup back button
         binding.btnBack.setOnClickListener(v -> finish());
+        
+        // Setup call buttons
+        binding.btnVoiceCall.setOnClickListener(v -> initiateAudioCall());
+        binding.btnVideoCall.setOnClickListener(v -> initiateVideoCall());
+        
+        // Setup more options button
+        binding.btnMore.setOnClickListener(v -> showMoreOptions());
         
         // Set user info in toolbar
         if (otherUserName != null) {
@@ -144,7 +167,7 @@ public class PrivateChatActivity extends AppCompatActivity {
 
         // Setup action buttons
         binding.btnVideoCall.setOnClickListener(v -> {
-            Toast.makeText(this, "Video call feature coming soon!", Toast.LENGTH_SHORT).show();
+            initiateVideoCall();
         });
         
         binding.btnVoiceCall.setOnClickListener(v -> {
@@ -649,7 +672,22 @@ public class PrivateChatActivity extends AppCompatActivity {
                     } else {
                         binding.userStatus.setText("offline");
                     }
+                    
+                    // Update call button states based on online status
+                    boolean isOnline = binding.userStatus.getText().toString().equals("online");
+                    updateCallButtonStates(isOnline);
                 });
+    }
+
+    private void updateCallButtonStates(boolean isOnline) {
+        // Enable/disable call buttons based on user's online status
+        binding.btnVoiceCall.setEnabled(isOnline);
+        binding.btnVideoCall.setEnabled(isOnline);
+        
+        // Update button alpha to show enabled/disabled state
+        float alpha = isOnline ? 1.0f : 0.5f;
+        binding.btnVoiceCall.setAlpha(alpha);
+        binding.btnVideoCall.setAlpha(alpha);
     }
     
     private void openUserProfile() {
@@ -835,24 +873,319 @@ public class PrivateChatActivity extends AppCompatActivity {
             return;
         }
 
-        // Start the audio call activity
-        Intent callIntent = new Intent(this, AudioCallActivity.class);
+        // Create call document in Firestore and start call activity
+        createCallDocumentAndStartCall("audio");
+    }
+
+    private void initiateVideoCall() {
+        if (otherUserId == null) {
+            Toast.makeText(this, "Unable to start video call", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check for camera and audio permissions
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
+                    VIDEO_PERMISSION_REQUEST_CODE);
+            return;
+        }
+
+        // Create call document in Firestore and start call activity
+        createCallDocumentAndStartCall("video");
+    }
+
+    private void createCallDocumentAndStartCall(String callType) {
+        if (currentUser == null || otherUserId == null) return;
+
+        String callId = db.collection("calls").document().getId();
+        
+        Map<String, Object> callData = new HashMap<>();
+        callData.put("callId", callId);
+        callData.put("callerId", currentUser.getUid());
+        callData.put("receiverId", otherUserId);
+        callData.put("callType", callType);
+        callData.put("status", "calling");
+        callData.put("startTime", System.currentTimeMillis());
+        callData.put("callerName", currentUser.getDisplayName() != null ? currentUser.getDisplayName() : "Unknown");
+        callData.put("receiverName", otherUserName);
+        callData.put("callerPhotoUrl", currentUser.getPhotoUrl() != null ? currentUser.getPhotoUrl().toString() : "");
+        callData.put("receiverPhotoUrl", otherUserPhotoUrl != null ? otherUserPhotoUrl : "");
+
+        db.collection("calls").document(callId).set(callData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("PrivateChatActivity", "Call document created successfully with callId: " + callId);
+                    // Start the call activity with the callId
+                    startCallActivity(callId, callType, true);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("PrivateChatActivity", "Error creating call document", e);
+                    Toast.makeText(this, "Failed to initiate call", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void createCallDocument(String callType) {
+        if (currentUser == null || otherUserId == null) return;
+
+        String callId = db.collection("calls").document().getId();
+        
+        Map<String, Object> callData = new HashMap<>();
+        callData.put("callId", callId);
+        callData.put("callerId", currentUser.getUid());
+        callData.put("receiverId", otherUserId);
+        callData.put("callType", callType);
+        callData.put("status", "calling");
+        callData.put("startTime", System.currentTimeMillis());
+        callData.put("callerName", currentUser.getDisplayName() != null ? currentUser.getDisplayName() : "Unknown");
+        callData.put("receiverName", otherUserName);
+        callData.put("callerPhotoUrl", currentUser.getPhotoUrl() != null ? currentUser.getPhotoUrl().toString() : "");
+        callData.put("receiverPhotoUrl", otherUserPhotoUrl != null ? otherUserPhotoUrl : "");
+
+        db.collection("calls").document(callId).set(callData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("PrivateChatActivity", "Call document created successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("PrivateChatActivity", "Error creating call document", e);
+                    Toast.makeText(this, "Failed to initiate call", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void startCallActivity(String callId, String callType, boolean isOutgoing) {
+        Intent callIntent;
+        
+        if ("video".equals(callType)) {
+            callIntent = new Intent(this, VideoCallActivity.class);
+        } else {
+            callIntent = new Intent(this, AudioCallActivity.class);
+        }
+        
+        callIntent.putExtra("callId", callId);
         callIntent.putExtra("otherUserId", otherUserId);
         callIntent.putExtra("otherUserName", binding.toolbarTitle.getText().toString());
-        callIntent.putExtra("isOutgoing", true);
+        callIntent.putExtra("otherUserPhotoUrl", otherUserPhotoUrl);
+        callIntent.putExtra("isOutgoing", isOutgoing);
+        callIntent.putExtra("callType", callType);
         startActivity(callIntent);
     }
 
+    private void setupCallStatusMonitoring() {
+        // Listen for incoming calls from the other user
+        callStatusListener = db.collection("calls")
+                .whereEqualTo("receiverId", currentUser.getUid())
+                .whereEqualTo("callerId", otherUserId)
+                .whereEqualTo("status", "calling")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("PrivateChatActivity", "Error listening for calls", error);
+                        return;
+                    }
+
+                    if (value != null && !value.isEmpty()) {
+                        // Only handle the most recent call
+                        DocumentSnapshot latestCall = value.getDocuments().get(0);
+                        String callType = latestCall.getString("callType");
+                        String callId = latestCall.getId();
+                        
+                        // Check if this is a recent call (within last 30 seconds)
+                        Long startTime = latestCall.getLong("startTime");
+                        if (startTime != null && (System.currentTimeMillis() - startTime) < 30000) {
+                            // Check if we're already handling a call
+                            if (!isHandlingIncomingCall) {
+                                handleIncomingCall(callId, callType);
+                            } else {
+                                Log.d("PrivateChatActivity", "Already handling incoming call, ignoring: " + callId);
+                            }
+                        } else {
+                            Log.d("PrivateChatActivity", "Ignoring old call: " + callId);
+                        }
+                    }
+                });
+    }
+
+    private void handleIncomingCall(String callId, String callType) {
+        // Prevent multiple call activities from being started
+        if (isHandlingIncomingCall) {
+            Log.d("PrivateChatActivity", "Already handling incoming call, ignoring duplicate");
+            return;
+        }
+        
+        isHandlingIncomingCall = true;
+        
+        // Show incoming call notification or dialog
+        runOnUiThread(() -> {
+            // Start the call activity for incoming calls
+            startCallActivity(callId, callType, false);
+        });
+        
+        // Reset the flag after a delay to allow for new calls
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            isHandlingIncomingCall = false;
+        }, 5000); // 5 second delay
+    }
+
+    private void showMoreOptions() {
+        // Create a popup menu with additional options
+        android.widget.PopupMenu popup = new android.widget.PopupMenu(this, binding.btnMore);
+        popup.getMenu().add("View Profile");
+        popup.getMenu().add("Block User");
+        popup.getMenu().add("Report User");
+        popup.getMenu().add("Clear Chat");
+        
+        popup.setOnMenuItemClickListener(item -> {
+            String title = item.getTitle().toString();
+            switch (title) {
+                case "View Profile":
+                    openUserProfile();
+                    return true;
+                case "Block User":
+                    blockUser();
+                    return true;
+                case "Report User":
+                    reportUser();
+                    return true;
+                case "Clear Chat":
+                    clearChat();
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        
+        popup.show();
+    }
+
+    private void blockUser() {
+        // Implement user blocking functionality
+        Toast.makeText(this, "Block user functionality coming soon", Toast.LENGTH_SHORT).show();
+    }
+
+    private void reportUser() {
+        // Implement user reporting functionality
+        Toast.makeText(this, "Report user functionality coming soon", Toast.LENGTH_SHORT).show();
+    }
+
+    private void clearChat() {
+        // Show confirmation dialog
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Clear Chat")
+                .setMessage("Are you sure you want to clear all messages? This action cannot be undone.")
+                .setPositiveButton("Clear", (dialog, which) -> {
+                    // Clear messages from Firestore
+                    clearChatMessages();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void clearChatMessages() {
+        if (chatId == null) return;
+        
+        // Clear messages from the subcollection
+        db.collection("private_chats").document(chatId)
+                .collection("messages")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        document.getReference().delete();
+                    }
+                    
+                    // Clear local messages
+                    messagesList.clear();
+                    if (messageAdapter != null) {
+                        messageAdapter.notifyDataSetChanged();
+                    }
+                    
+                    // Update chat metadata
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("lastMessage", "");
+                    updates.put("lastMessageTime", null);
+                    updates.put("lastMessageSenderId", "");
+                    updates.put("unreadCounts", new HashMap<>());
+                    
+                    db.collection("private_chats").document(chatId).update(updates);
+                    
+                    Toast.makeText(this, "Chat cleared successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to clear chat", Toast.LENGTH_SHORT).show();
+                });
+    }
+
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 1001;
+    private static final int VIDEO_PERMISSION_REQUEST_CODE = 1002;
+    
+    /**
+     * Send quiz invitation message automatically when opening chat
+     */
+    private void sendQuizInvitationMessage(String matchId, String invitationMessage) {
+        if (chatId == null) {
+            // Wait for chat to be created first
+            new android.os.Handler().postDelayed(() -> {
+                sendQuizInvitationMessage(matchId, invitationMessage);
+            }, 1000);
+            return;
+        }
+        
+        // Create the invitation message
+        Message invitationMsg = new Message();
+        invitationMsg.setSenderId(currentUser.getUid());
+        invitationMsg.setSenderName(currentUser.getDisplayName() != null ? currentUser.getDisplayName() : currentUser.getEmail());
+        invitationMsg.setSenderPhotoUrl(currentUser.getPhotoUrl() != null ? currentUser.getPhotoUrl().toString() : "");
+        invitationMsg.setContent(invitationMessage);
+        invitationMsg.setCreatedAt(new Timestamp(new Date()));
+        invitationMsg.setType(Message.MessageType.SYSTEM);
+        invitationMsg.setMessageType("quiz_invitation");
+        invitationMsg.setInvitationData(new HashMap<String, Object>() {{
+            put("match_id", matchId);
+            put("invitation_type", "quiz_battle");
+        }});
+        invitationMsg.setStatus(Message.MessageStatus.SENT);
+        
+        // Save message to Firestore
+        db.collection("private_chats")
+                .document(chatId)
+                .collection("messages")
+                .add(invitationMsg)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("PrivateChatActivity", "Quiz invitation sent successfully with ID: " + documentReference.getId());
+                    // Update chat metadata
+                    updateChatMetadata(invitationMessage);
+                    sendNotificationToRecipient(invitationMessage);
+                    
+                    // Show a toast to confirm invitation sent
+                    Toast.makeText(this, "Quiz invitation sent!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("PrivateChatActivity", "Failed to send quiz invitation", e);
+                    Toast.makeText(this, "Failed to send quiz invitation: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
         if (requestCode == AUDIO_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 initiateAudioCall();
             } else {
                 Toast.makeText(this, "Audio permission is required for voice calls", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == VIDEO_PERMISSION_REQUEST_CODE) {
+            boolean allGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+            
+            if (allGranted) {
+                initiateVideoCall();
+            } else {
+                Toast.makeText(this, "Camera and audio permissions are required for video calls", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -875,6 +1208,13 @@ public class PrivateChatActivity extends AppCompatActivity {
             messageStatusListener.remove();
             messageStatusListener = null;
         }
+        if (callStatusListener != null) {
+            callStatusListener.remove();
+            callStatusListener = null;
+        }
+        
+        // Reset incoming call flag
+        isHandlingIncomingCall = false;
         
         binding = null;
     }

@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.nurse_connect"
-    compileSdk = 36
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.nurse_connect"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -19,16 +19,21 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
@@ -47,13 +52,13 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")
     
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    // Firebase (Updated to latest BOM)
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
     
     // UI Components
     implementation("com.github.bumptech.glide:glide:4.16.0")
@@ -80,8 +85,17 @@ dependencies {
     // Real-time features
     implementation("com.google.firebase:firebase-database")
 
-    // Audio recording and playback for real-time communication
-    // Using built-in Android audio APIs
+    // WebRTC Android Library - Stream.io (Reliable alternative)
+    implementation("io.getstream:stream-webrtc-android:1.0.6")
+
+    // Additional dependencies for WebRTC
+    implementation("com.google.code.gson:gson:2.10.1")
+    
+    // HTML Parsing
+    implementation("org.jsoup:jsoup:1.17.2")
+    
+    // Gemini AI for flashcard generation
+    implementation("com.google.ai.client.generativeai:generativeai:0.1.0")
     
     // Testing
     testImplementation(libs.junit)

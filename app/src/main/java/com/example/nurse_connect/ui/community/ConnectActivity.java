@@ -94,8 +94,7 @@ public class ConnectActivity extends AppCompatActivity {
 
         // Create Public Task
         binding.cardCreateTask.setOnClickListener(v -> {
-            Toast.makeText(this, "Task creation feature coming soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to task creation activity
+            showTaskCreationOptions();
         });
 
         // Setup quick connect items
@@ -129,6 +128,42 @@ public class ConnectActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void showTaskCreationOptions() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        
+        // Inflate custom dialog layout
+        android.view.LayoutInflater inflater = getLayoutInflater();
+        android.view.View dialogView = inflater.inflate(R.layout.dialog_task_selection, null);
+        builder.setView(dialogView);
+        
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        
+        // Set up click listeners
+        dialogView.findViewById(R.id.card_quiz_battle).setOnClickListener(v -> {
+            dialog.dismiss();
+            android.content.Intent quizIntent = new android.content.Intent(this, 
+                    com.example.nurse_connect.ui.quiz.QuizSetupActivity.class);
+            startActivity(quizIntent);
+        });
+        
+        dialogView.findViewById(R.id.card_study_task).setOnClickListener(v -> {
+            dialog.dismiss();
+            Toast.makeText(this, "Study Group Tasks coming soon!", Toast.LENGTH_SHORT).show();
+        });
+        
+        dialogView.findViewById(R.id.card_public_challenge).setOnClickListener(v -> {
+            dialog.dismiss();
+            Toast.makeText(this, "Public Challenges coming soon!", Toast.LENGTH_SHORT).show();
+        });
+        
+        dialogView.findViewById(R.id.btn_cancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        
+        dialog.show();
     }
 
     @Override

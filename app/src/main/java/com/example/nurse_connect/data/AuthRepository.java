@@ -56,13 +56,16 @@ public class AuthRepository {
                 .addOnFailureListener(executor, callback::onFailure);
     }
 
-    public void signUpWithEmail(String email, String password, String username, String displayName, String school, String year, String course, String description, String photoURL, String handle, AuthCallback callback) {
+    public void signUpWithEmail(String email, String password, String username, String displayName, String phoneNumber,
+                               String nursingCareer, String yearsExperience, String currentInstitution,
+                               String school, String year, String course, String description, String photoURL, String handle, AuthCallback callback) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(executor, authResult -> {
                     FirebaseUser user = authResult.getUser();
                     if (user != null) {
                         // Create user profile in Firestore with enhanced profile data
-                        User userProfile = new User(user.getUid(), email, username, displayName);
+                        User userProfile = new User(user.getUid(), email, username, displayName, phoneNumber, 
+                                                  nursingCareer, yearsExperience, currentInstitution);
                         userProfile.setEmailVerified(user.isEmailVerified());
                         
                         // Set handle
@@ -75,14 +78,22 @@ public class AuthRepository {
                             userProfile.setPhotoURL(photoURL);
                         }
                         
-                        // Set enhanced profile data
+                        // Set enhanced profile data in UserProfile
                         if (userProfile.getProfile() == null) {
                             userProfile.setProfile(new com.example.nurse_connect.models.UserProfile());
                         }
+                        
+                        // Set academic/educational information
                         userProfile.getProfile().setInstitution(school);
                         userProfile.getProfile().setStudyYear(year);
                         userProfile.getProfile().setSpecialization(course);
+                        userProfile.getProfile().setCourse(course);
                         userProfile.getProfile().setBio(description);
+                        
+                        // Set initial settings
+                        if (userProfile.getSettings() == null) {
+                            userProfile.setSettings(new com.example.nurse_connect.models.UserSettings());
+                        }
                         
                         firestore.collection("users").document(user.getUid())
                                 .set(userProfile)

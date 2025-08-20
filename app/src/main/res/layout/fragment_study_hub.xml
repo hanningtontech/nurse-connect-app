@@ -24,7 +24,54 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <!-- Study Mode Avatar -->
+                <ImageView
+                    android:id="@+id/ivStudyModeAvatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_person"
+                    android:scaleType="centerCrop"
+                    android:elevation="8dp"
+                    android:background="@drawable/circle_background_blue"
+                    app:tint="@color/white" />
+
+
+
+                <!-- Reset Progress Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnResetProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔄 Reset Progress"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/theme_warning"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/ic_refresh"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white" />
+
+                <!-- Quick Reset Streak Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnQuickResetStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ Quick Reset Streak"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/colorSecondary"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="16dp"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/ic_success"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"

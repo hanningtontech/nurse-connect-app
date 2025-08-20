@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    
+    <!-- Fallback question background -->
+    <solid android:color="@color/fallback_question_background" />
+    
+    <!-- Border to indicate fallback questions -->
+    <stroke
+        android:width="2dp"
+        android:color="@color/fallback_question_border" />
+    
+    <!-- Rounded corners -->
+    <corners android:radius="12dp" />
+    
+    <!-- Add a subtle pattern or indicator -->
+    <padding
+        android:left="20dp"
+        android:top="20dp"
+        android:right="20dp"
+        android:bottom="20dp" />
+        
+</shape>

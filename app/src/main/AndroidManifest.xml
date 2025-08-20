@@ -24,6 +24,11 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
+    <!-- WebRTC specific permissions -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <!-- Location permission for nearby features -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -46,7 +51,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Nurse_Connect"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         android:networkSecurityConfig="@xml/network_security_config"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
@@ -167,11 +172,7 @@
             android:exported="false"
             android:theme="@style/Theme.Nurse_Connect" />
         
-        <!-- Edit Document Activity -->
-        <activity
-            android:name=".ui.upload.EditDocumentActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Nurse_Connect" />
+
         
         <!-- Downloads Activity -->
         <activity
@@ -211,6 +212,19 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+        
+        <!-- Video Call Activity -->
+        <activity
+            android:name=".ui.chat.VideoCallActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+        
+        <!-- Call History Activity -->
+        <activity
+            android:name=".ui.calls.CallHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect" />
         
         <!-- Private Chat List Activity -->
         <activity
@@ -278,6 +292,13 @@
             android:name=".ui.community.CommunityHubActivity"
             android:exported="false"
             android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+
+        <!-- Universal Search Activity -->
+        <activity
+            android:name=".ui.search.UniversalSearchActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
         
         <!-- Global Nurse Hub Activity -->
         <activity
@@ -302,6 +323,96 @@
             android:name=".ui.community.CommunityProfileViewActivity"
             android:exported="false"
             android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+        
+        <!-- Quiz Match Activities -->
+        <activity
+            android:name=".ui.quiz.QuizSetupActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.quiz.QuizMatchmakingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+        
+        <activity
+            android:name=".ui.quiz.QuizWaitingRoomActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+        
+        <activity
+            android:name=".ui.quiz.QuizMatchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <!-- Flashcard Activities -->
+        <activity
+            android:name=".ui.flashcards.FlashcardSetupActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardGameModeSelectionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardStudyModeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardTimedModeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardQuizModeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardSpacedRepetitionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardMasteryModeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.StudyProgressActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardResultsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardSessionDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+        <activity
+            android:name=".ui.flashcards.FlashcardProgressActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nurse_Connect.NoActionBar" />
+            
+
             
         <!-- Image Crop Activity -->
         <activity

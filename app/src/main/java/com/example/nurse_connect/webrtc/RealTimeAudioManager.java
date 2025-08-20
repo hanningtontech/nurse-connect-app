@@ -1,41 +1,24 @@
 package com.example.nurse_connect.webrtc;
 
 import android.content.Context;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
-import android.media.MediaRecorder;
 import android.util.Log;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class RealTimeAudioManager {
+/**
+ * WebRTC-based Real-time Audio Manager
+ * This class wraps the WebRTCManager to provide the same interface as the old RealTimeAudioManager
+ * but uses WebRTC for actual real-time audio communication
+ */
+public class RealTimeAudioManager implements WebRTCManager.WebRTCListener {
     private static final String TAG = "RealTimeAudioManager";
 
-    // Audio configuration
-    private static final int SAMPLE_RATE = 8000;
-    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
-    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
-
     private Context context;
-    private AudioManager audioManager;
-    private AudioRecord audioRecord;
-    private AudioTrack audioTrack;
-    private ExecutorService executorService;
-
-    private boolean isRecording = false;
-    private boolean isPlaying = false;
-    private boolean isMuted = false;
-    private boolean isSpeakerOn = false;
-
+    private WebRTCManager webRTCManager;
     private AudioListener listener;
+
+    private String callId;
+    private String localUserId;
+    private String remoteUserId;
+    private boolean isInitiator = false;
 
     public interface AudioListener {
         void onCallConnected();
@@ -48,196 +31,136 @@ public class RealTimeAudioManager {
     public RealTimeAudioManager(Context context, AudioListener listener) {
         this.context = context;
         this.listener = listener;
-        this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        this.executorService = Executors.newFixedThreadPool(2);
-        initializeAudio();
+
+        // Initialize WebRTC manager
+        webRTCManager = new WebRTCManager(context, this);
+
+        Log.d(TAG, "RealTimeAudioManager initialized with WebRTC");
     }
-    
-    private void initializeAudio() {
-        try {
-            // Initialize AudioRecord for recording
-            audioRecord = new AudioRecord(
-                    MediaRecorder.AudioSource.MIC,
-                    SAMPLE_RATE,
-                    CHANNEL_CONFIG,
-                    AUDIO_FORMAT,
-                    BUFFER_SIZE
-            );
 
-            // Initialize AudioTrack for playback
-            audioTrack = new AudioTrack(
-                    AudioManager.STREAM_VOICE_CALL,
-                    SAMPLE_RATE,
-                    AudioFormat.CHANNEL_OUT_MONO,
-                    AUDIO_FORMAT,
-                    BUFFER_SIZE,
-                    AudioTrack.MODE_STREAM
-            );
+    /**
+     * Set call parameters for WebRTC connection
+     */
+    public void setCallParameters(String callId, String localUserId, String remoteUserId, boolean isInitiator) {
+        this.callId = callId;
+        this.localUserId = localUserId;
+        this.remoteUserId = remoteUserId;
+        this.isInitiator = isInitiator;
 
-            Log.d(TAG, "Audio components initialized");
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to initialize audio", e);
-            if (listener != null) {
-                listener.onError("Failed to initialize audio: " + e.getMessage());
-            }
-        }
+        Log.d(TAG, "Call parameters set - CallId: " + callId + ", IsInitiator: " + isInitiator);
     }
 
     public void startCall() {
-        if (audioRecord == null || audioTrack == null) {
-            Log.e(TAG, "Audio components not initialized");
+        if (callId == null || localUserId == null || remoteUserId == null) {
+            Log.e(TAG, "Call parameters not set. Call setCallParameters() first.");
+            if (listener != null) {
+                listener.onError("Call parameters not set");
+            }
             return;
         }
 
         try {
-            // Configure audio manager for voice call
-            audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-            audioManager.setSpeakerphoneOn(isSpeakerOn);
+            Log.d(TAG, "Starting WebRTC call");
 
-            // Start recording and playing
-            startRecording();
-            startPlaying();
-
-            if (listener != null) {
-                listener.onCallConnected();
-                listener.onAudioStarted();
+            if (isInitiator) {
+                // Start call as initiator
+                webRTCManager.startCall(callId, localUserId, remoteUserId);
+            } else {
+                // Answer incoming call
+                webRTCManager.answerCall(callId, localUserId, remoteUserId);
             }
 
-            Log.d(TAG, "Audio call started");
         } catch (Exception e) {
-            Log.e(TAG, "Failed to start call", e);
+            Log.e(TAG, "Failed to start WebRTC call", e);
             if (listener != null) {
                 listener.onError("Failed to start call: " + e.getMessage());
             }
         }
     }
-    
-    private void startRecording() {
-        if (audioRecord != null && !isRecording) {
-            isRecording = true;
-            audioRecord.startRecording();
 
-            executorService.execute(() -> {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                while (isRecording && audioRecord != null) {
-                    int bytesRead = audioRecord.read(buffer, 0, buffer.length);
-                    if (bytesRead > 0 && !isMuted) {
-                        // In a real implementation, this would send audio data to the other user
-                        // For now, we'll just simulate the audio processing
-                        processAudioData(buffer, bytesRead);
-                    }
-                }
-            });
-
-            Log.d(TAG, "Audio recording started");
-        }
-    }
-    
-    private void startPlaying() {
-        if (audioTrack != null && !isPlaying) {
-            isPlaying = true;
-            audioTrack.play();
-
-            executorService.execute(() -> {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                while (isPlaying && audioTrack != null) {
-                    // In a real implementation, this would receive audio data from the other user
-                    // For now, we'll simulate receiving audio data
-                    int bytesToWrite = simulateReceivedAudio(buffer);
-                    if (bytesToWrite > 0) {
-                        audioTrack.write(buffer, 0, bytesToWrite);
-                    }
-
-                    try {
-                        Thread.sleep(20); // Small delay to prevent busy waiting
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-            });
-
-            Log.d(TAG, "Audio playback started");
-        }
-    }
-    
-    private void processAudioData(byte[] buffer, int bytesRead) {
-        // In a real implementation, this would encode and send audio data to the other user
-        // For demonstration, we'll just log that audio is being processed
-        // Log.d(TAG, "Processing " + bytesRead + " bytes of audio data");
-    }
-
-    private int simulateReceivedAudio(byte[] buffer) {
-        // In a real implementation, this would receive and decode audio data from the other user
-        // For demonstration, we'll return 0 to indicate no audio data
-        return 0;
-    }
-    
     public void toggleMute(boolean mute) {
-        this.isMuted = mute;
-        Log.d(TAG, "Audio " + (mute ? "muted" : "unmuted"));
+        if (webRTCManager != null) {
+            webRTCManager.toggleMute(mute);
+            Log.d(TAG, "Audio " + (mute ? "muted" : "unmuted"));
+        }
     }
 
     public void toggleSpeaker(boolean speakerOn) {
-        this.isSpeakerOn = speakerOn;
-        if (audioManager != null) {
-            audioManager.setSpeakerphoneOn(speakerOn);
+        if (webRTCManager != null) {
+            webRTCManager.toggleSpeaker(speakerOn);
             Log.d(TAG, "Speaker " + (speakerOn ? "on" : "off"));
         }
     }
 
-    public boolean isMuted() {
-        return isMuted;
-    }
-
-    public boolean isSpeakerOn() {
-        return isSpeakerOn;
-    }
-
     public void endCall() {
-        // Stop recording
-        if (isRecording) {
-            isRecording = false;
-            if (audioRecord != null) {
-                try {
-                    audioRecord.stop();
-                    audioRecord.release();
-                    audioRecord = null;
-                } catch (Exception e) {
-                    Log.e(TAG, "Error stopping audio record", e);
-                }
-            }
+        Log.d(TAG, "Ending WebRTC call");
+
+        if (webRTCManager != null) {
+            webRTCManager.endCall();
         }
 
-        // Stop playing
-        if (isPlaying) {
-            isPlaying = false;
-            if (audioTrack != null) {
-                try {
-                    audioTrack.stop();
-                    audioTrack.release();
-                    audioTrack = null;
-                } catch (Exception e) {
-                    Log.e(TAG, "Error stopping audio track", e);
-                }
-            }
-        }
+        // Reset call parameters
+        callId = null;
+        localUserId = null;
+        remoteUserId = null;
+        isInitiator = false;
+    }
 
-        // Reset audio manager
-        if (audioManager != null) {
-            audioManager.setMode(AudioManager.MODE_NORMAL);
-            audioManager.setSpeakerphoneOn(false);
+    /**
+     * Clean up resources
+     */
+    public void cleanup() {
+        if (webRTCManager != null) {
+            webRTCManager.cleanup();
+            webRTCManager = null;
         }
+        Log.d(TAG, "RealTimeAudioManager cleaned up");
+    }
 
-        // Shutdown executor
-        if (executorService != null && !executorService.isShutdown()) {
-            executorService.shutdown();
+    // WebRTCManager.WebRTCListener implementation
+    @Override
+    public void onCallConnected() {
+        Log.d(TAG, "WebRTC call connected");
+        if (listener != null) {
+            listener.onCallConnected();
         }
+    }
 
+    @Override
+    public void onCallDisconnected() {
+        Log.d(TAG, "WebRTC call disconnected");
         if (listener != null) {
             listener.onCallDisconnected();
+        }
+    }
+
+    @Override
+    public void onAudioStarted() {
+        Log.d(TAG, "WebRTC audio started");
+        if (listener != null) {
+            listener.onAudioStarted();
+        }
+    }
+
+    @Override
+    public void onAudioStopped() {
+        Log.d(TAG, "WebRTC audio stopped");
+        if (listener != null) {
             listener.onAudioStopped();
         }
+    }
 
-        Log.d(TAG, "Call ended and resources cleaned up");
+    @Override
+    public void onError(String error) {
+        Log.e(TAG, "WebRTC error: " + error);
+        if (listener != null) {
+            listener.onError(error);
+        }
+    }
+
+    @Override
+    public void onRemoteAudioReceived() {
+        Log.d(TAG, "Remote audio stream received");
+        // This indicates that we're receiving audio from the remote peer
     }
 }

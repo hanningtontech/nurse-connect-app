@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/theme_border"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@color/theme_surface"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Unread Indicator -->
+        <View
+            android:id="@+id/unreadIndicator"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/theme_primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- User Photo -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivUserPhoto"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_person"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/unreadIndicator"
+            tools:src="@drawable/ic_person" />
+
+        <!-- Notification Icon -->
+        <ImageView
+            android:id="@+id/ivNotificationIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_notifications"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/theme_surface"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivUserPhoto"
+            app:layout_constraintEnd_toEndOf="@id/ivUserPhoto"
+            tools:src="@drawable/ic_chat" />
+
+        <!-- Content -->
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="@id/ivUserPhoto"
+            app:layout_constraintStart_toEndOf="@id/ivUserPhoto"
+            app:layout_constraintEnd_toStartOf="@id/btnAction"
+            app:layout_constraintBottom_toBottomOf="@id/ivUserPhoto">
+
+            <!-- Message Type Label -->
+            <TextView
+                android:id="@+id/tvMessageType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💬 Message"
+                android:textSize="10sp"
+                android:textColor="@color/theme_text_secondary"
+                android:textStyle="normal"
+                android:layout_marginBottom="2dp"
+                tools:text="💬 Message" />
+
+            <!-- Title (Sender Name) -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Message from Brian Rono"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/theme_primary"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:lineSpacingExtra="2dp"
+                tools:text="Message from Brian Rono" />
+
+            <!-- Message Preview -->
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap to view conversation"
+                android:textSize="13sp"
+                android:textColor="@color/theme_text_secondary"
+                android:layout_marginTop="4dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="Tap to view conversation" />
+
+            <!-- Time -->
+            <TextView
+                android:id="@+id/tvTimeAgo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2m ago"
+                android:textSize="10sp"
+                android:textColor="@color/theme_text_secondary"
+                android:layout_marginTop="4dp"
+                tools:text="2m ago" />
+
+        </LinearLayout>
+
+        <!-- Action Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAction"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="View"
+            android:textSize="10sp"
+            android:minWidth="60dp"
+            android:paddingHorizontal="8dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/theme_primary"
+            app:layout_constraintTop_toTopOf="@id/ivUserPhoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="View" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

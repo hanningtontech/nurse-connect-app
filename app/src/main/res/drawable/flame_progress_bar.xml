@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="4dp" />
+            <solid android:color="#F0F0F0" />
+        </shape>
+    </item>
+    
+    <!-- Progress with flame effect -->
+    <item android:id="@android:id/progress">
+        <scale android:scaleWidth="100%">
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp" />
+                <gradient
+                    android:startColor="#FF6B35"
+                    android:centerColor="#FF8C42"
+                    android:endColor="#FF6B35"
+                    android:angle="0"
+                    android:type="linear" />
+            </shape>
+        </scale>
+    </item>
+    
+    <!-- Flame streak overlay for higher progress -->
+    <item android:id="@android:id/progress">
+        <scale android:scaleWidth="100%">
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp" />
+                <gradient
+                    android:startColor="#FF4500"
+                    android:centerColor="#FF6347"
+                    android:endColor="#FF4500"
+                    android:angle="0"
+                    android:type="linear" />
+            </shape>
+        </scale>
+    </item>
+</layer-list>

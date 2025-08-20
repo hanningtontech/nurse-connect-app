@@ -3,8 +3,8 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="@color/gray">
-  <path
-      android:fillColor="@android:color/white"
-      android:pathData="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,12V14H8V12H6V16H8V18H10V16H12V12H10M14,12V18H16V16H18A2,2 0 0,0 20,14V12H18V14H16V12H14Z"/>
+    android:tint="@color/medical_surface">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M20,2H8C6.9,2 6,2.9 6,4V16C6,17.1 6.9,18 8,18H20C21.1,18 22,17.1 22,16V4C22,2.9 21.1,2 20,2M20,16H8V4H20V16M4,6H2V20C2,21.1 2.9,22 4,22H18V20H4V6M16,12V9C16,8.45 15.55,8 15,8H13V13H15C15.55,13 16,12.55 16,12M14,9H15V12H14V9M11,8H9C8.45,8 8,8.45 8,9V13H9V11H11V13H12V9C12,8.45 11.55,8 11,8M11,10H9V9H11V10Z"/>
 </vector> 

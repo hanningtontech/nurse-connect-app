@@ -148,9 +148,128 @@ public class CommunityHubFragment extends Fragment {
         
         // Public Tasks card
         binding.cardPublicTasks.setOnClickListener(v -> {
-            // TODO: Navigate to public tasks
-            Toast.makeText(requireContext(), "Public Tasks feature coming soon!", Toast.LENGTH_SHORT).show();
+            showPublicTasksOptions();
         });
+    }
+    
+    private void showPublicTasksOptions() {
+        String[] options = {
+            "🏆 Quiz Battle",
+            "📚 Study Challenges", 
+            "👥 Group Tasks",
+            "🎯 Flashcards",
+            "⚙️ Admin: Upload Quiz Questions",
+            "📚 PDF Question Extractor"
+        };
+
+        String[] descriptions = {
+            "Compete in real-time nursing quizzes",
+            "Educational challenges for all",
+            "Collaborative learning tasks",
+            "Study with spaced repetition flashcards",
+            "Upload sample questions for quiz system",
+            "Upload PDFs and extract questions automatically"
+        };
+
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+        builder.setTitle("Join Public Tasks");
+        
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<String>(requireContext(), 
+                android.R.layout.simple_list_item_2, android.R.id.text1, options) {
+            @Override
+            public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
+                android.view.View view = super.getView(position, convertView, parent);
+                android.widget.TextView text1 = view.findViewById(android.R.id.text1);
+                android.widget.TextView text2 = view.findViewById(android.R.id.text2);
+                
+                text1.setText(options[position]);
+                text2.setText(descriptions[position]);
+                text1.setTextSize(16);
+                text2.setTextSize(14);
+                
+                return view;
+            }
+        };
+
+        builder.setAdapter(adapter, (dialog, which) -> {
+            switch (which) {
+                case 0: // Quiz Battle
+                    Intent quizIntent = new Intent(requireContext(), 
+                            com.example.nurse_connect.ui.quiz.QuizSetupActivity.class);
+                    startActivity(quizIntent);
+                    break;
+                case 1: // Study Challenges
+                    Toast.makeText(requireContext(), "Study Challenges coming soon!", Toast.LENGTH_SHORT).show();
+                    break;
+                case 2: // Group Tasks
+                    Toast.makeText(requireContext(), "Group Tasks coming soon!", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3: // Flashcards
+                    Intent flashcardIntent = new Intent(requireContext(), 
+                            com.example.nurse_connect.ui.flashcards.FlashcardSetupActivity.class);
+                    startActivity(flashcardIntent);
+                    break;
+                case 4: // Admin: Upload Quiz Questions
+                    showAdminUploadDialog();
+                    break;
+                case 5: // PDF Question Extractor
+                    Intent pdfIntent = new Intent(requireContext(), 
+                            com.example.nurse_connect.ui.admin.PdfUploadActivity.class);
+                    startActivity(pdfIntent);
+                    break;
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+    
+    private void showAdminUploadDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+        builder.setTitle("Admin: Upload Quiz Questions");
+        builder.setMessage("This will upload sample nursing questions to the quiz system. Only use this if questions are missing.");
+        
+        builder.setPositiveButton("Upload Questions", (dialog, which) -> {
+            // Navigate to QuizSetupActivity for uploading
+            Intent intent = new Intent(requireContext(), 
+                    com.example.nurse_connect.ui.quiz.QuizSetupActivity.class);
+            startActivity(intent);
+        });
+        
+        builder.setNeutralButton("View Format", (dialog, which) -> {
+            showQuestionFormatDialog();
+        });
+        
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+    
+    private void showQuestionFormatDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+        builder.setTitle("Question Format");
+        builder.setMessage(
+            "Questions should be in JSON format:\n\n" +
+            "{\n" +
+            "  \"questions\": [\n" +
+            "    {\n" +
+            "      \"questionId\": \"unique_id\",\n" +
+            "      \"question\": \"Question text?\",\n" +
+            "      \"options\": [\"Option A\", \"Option B\", \"Option C\", \"Option D\"],\n" +
+            "      \"correctAnswerIndex\": 0,\n" +
+            "      \"explanation\": \"Why this is correct\",\n" +
+            "      \"course\": \"Course Name\",\n" +
+            "      \"unit\": \"Unit Name\",\n" +
+            "      \"specialization\": \"Specialization\",\n" +
+            "      \"difficulty\": \"easy/medium/hard\",\n" +
+            "      \"timeLimit\": 30\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}\n\n" +
+            "Place your JSON file in the app's assets folder as 'sample_quiz_questions.json'"
+        );
+        
+        builder.setPositiveButton("Got It", null);
+        builder.show();
     }
     
     @Override

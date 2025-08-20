@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Correct answer state -->
+    <item android:state_selected="true" android:drawable="@drawable/quiz_option_button_correct" />
+    
+    <!-- Incorrect answer state (when user selects wrong answer) -->
+    <item android:state_activated="true" android:drawable="@drawable/quiz_option_button_incorrect" />
+    
+    <!-- Selected state (when user taps an option) -->
+    <item android:state_pressed="true" android:drawable="@drawable/quiz_option_button_selected" />
+    
+    <!-- Default state -->
+    <item android:drawable="@drawable/quiz_option_button_normal" />
+    
+</selector>

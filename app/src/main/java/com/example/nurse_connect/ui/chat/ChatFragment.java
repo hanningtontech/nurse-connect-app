@@ -22,6 +22,7 @@ import com.example.nurse_connect.R;
 import com.example.nurse_connect.adapters.ChatPagerAdapter;
 import com.example.nurse_connect.databinding.FragmentChatBinding;
 import com.example.nurse_connect.ui.community.CommunityHubActivity;
+import com.example.nurse_connect.ui.calls.CallHistoryActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,6 +75,12 @@ public class ChatFragment extends Fragment {
                     }
                 });
         tabLayoutMediator.attach();
+
+        // Setup call history button
+        binding.btnCallHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), CallHistoryActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadUnreadCounts() {
@@ -107,7 +114,10 @@ public class ChatFragment extends Fragment {
                         }
                     }
 
-                    updateTabBadge(0, totalUnread); // Direct Messages tab
+                    // Only update if fragment is still active
+                    if (getActivity() != null && !isDetached()) {
+                        updateTabBadge(0, totalUnread); // Direct Messages tab
+                    }
                 });
     }
 
@@ -146,11 +156,20 @@ public class ChatFragment extends Fragment {
                     }
 
                     Log.d("ChatFragment", "Total Study Groups unread count: " + totalUnread);
-                    updateTabBadge(1, totalUnread); // Study Groups tab
+                    // Only update if fragment is still active
+                    if (getActivity() != null && !isDetached()) {
+                        updateTabBadge(1, totalUnread); // Study Groups tab
+                    }
                 });
     }
 
     private void updateTabBadge(int tabPosition, int count) {
+        // Check if binding is null to prevent crashes
+        if (binding == null || binding.tabLayout == null) {
+            Log.w("ChatFragment", "Cannot update tab badge - binding is null");
+            return;
+        }
+
         TabLayout.Tab tab = binding.tabLayout.getTabAt(tabPosition);
         String tabName = tabPosition == 0 ? "Direct Messages" : "Study Groups";
 

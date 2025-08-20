@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    android:padding="8dp">
+
+    <!-- Timer Background Circle -->
+    <ProgressBar
+        android:id="@+id/timerBackground"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/circular_timer_background"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/circular_timer_background"
+        android:rotation="180" />
+
+    <!-- Timer Progress Circle -->
+    <ProgressBar
+        android:id="@+id/timerProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/circular_timer_progress"
+        android:rotation="180" />
+
+    <!-- Timer Text -->
+    <TextView
+        android:id="@+id/timerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="30"
+        android:textAppearance="@style/TextAppearance.Medical.Timer"
+        android:textSize="24sp"
+        android:textColor="@color/medical_timer_normal" />
+
+    <!-- Timer Icon (Medical Cross) -->
+    <ImageView
+        android:id="@+id/timerIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_timer_medical"
+        android:contentDescription="Timer Icon" />
+
+</FrameLayout>

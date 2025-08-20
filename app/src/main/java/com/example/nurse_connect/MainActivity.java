@@ -179,8 +179,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
+                // Start the service as a regular service first, not as foreground
                 Intent serviceIntent = new Intent(this, com.example.nurse_connect.services.CallNotificationService.class);
-                startForegroundService(serviceIntent);
+                startService(serviceIntent);
                 android.util.Log.d("MainActivity", "CallNotificationService started successfully for user: " + currentUser.getUid());
 
                 // Add a small delay and then test if service is working

@@ -126,11 +126,14 @@ public class AuthViewModel extends ViewModel {
         });
     }
 
-    public void signUpWithEmail(String email, String password, String username, String displayName, String school, String year, String course, String description, String photoURL, String handle) {
+    public void signUpWithEmail(String email, String password, String username, String displayName, String phoneNumber, 
+                               String nursingCareer, String yearsExperience, String currentInstitution, 
+                               String school, String year, String course, String description, String photoURL, String handle) {
         isLoading.postValue(true);
         errorMessage.postValue(null);
         
-        authRepository.signUpWithEmail(email, password, username, displayName, school, year, course, description, photoURL, handle, new AuthRepository.AuthCallback() {
+        authRepository.signUpWithEmail(email, password, username, displayName, phoneNumber, nursingCareer, yearsExperience, 
+                                     currentInstitution, school, year, course, description, photoURL, handle, new AuthRepository.AuthCallback() {
             @Override
             public void onSuccess(FirebaseUser firebaseUser) {
                 authRepository.getUserProfile(firebaseUser.getUid(), new AuthRepository.UserCallback() {

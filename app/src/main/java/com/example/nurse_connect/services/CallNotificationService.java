@@ -31,6 +31,8 @@ public class CallNotificationService extends Service {
     private FirebaseUser currentUser;
     private ListenerRegistration callListener;
 
+    private boolean isForegroundRunning = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,7 +50,10 @@ public class CallNotificationService extends Service {
         Log.d(TAG, "Service starting for user: " + currentUser.getUid());
 
         createNotificationChannel();
-        startForeground(NOTIFICATION_ID, createForegroundNotification());
+        
+        // Don't start as foreground service immediately - wait until we actually need it
+        // (i.e., when there are incoming calls)
+        Log.d(TAG, "Service initialized, will start as foreground when needed");
 
         listenForIncomingCalls();
     }
@@ -92,6 +97,52 @@ public class CallNotificationService extends Service {
             }
         }
     }
+    
+    /**
+     * Check if the service is currently running as a foreground service
+     */
+    private boolean isForegroundService() {
+        // We can track this with a boolean flag since we control when we start/stop foreground
+        return isForegroundRunning;
+    }
+
+    /**
+     * Start the service as a foreground service when needed
+     */
+    private void startAsForegroundService() {
+        try {
+            // Only start as foreground if we're not already foreground
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (!isForegroundService()) {
+                    startForeground(NOTIFICATION_ID, createForegroundNotification());
+                    isForegroundRunning = true;
+                    Log.d(TAG, "Service started as foreground service successfully");
+                } else {
+                    Log.d(TAG, "Service is already running as foreground");
+                }
+            } else {
+                startForeground(NOTIFICATION_ID, createForegroundNotification());
+                isForegroundRunning = true;
+                Log.d(TAG, "Service started as foreground service successfully");
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Could not start as foreground service: " + e.getMessage());
+            Log.w(TAG, "Continuing as background service");
+        }
+    }
+    
+    /**
+     * Stop the foreground service when no longer needed
+     */
+    private void stopForegroundService() {
+        try {
+            stopForeground(true);
+            isForegroundRunning = false;
+            Log.d(TAG, "Service stopped as foreground service");
+        } catch (Exception e) {
+            Log.w(TAG, "Could not stop foreground service: " + e.getMessage());
+        }
+    }
 
     private Notification createForegroundNotification() {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -106,113 +157,71 @@ public class CallNotificationService extends Service {
     private void listenForIncomingCalls() {
         Log.d(TAG, "Starting to listen for incoming calls for user: " + currentUser.getUid());
 
-        // Test query first to make sure we can access Firestore
-        db.collection("calls")
-                .whereEqualTo("receiverId", currentUser.getUid())
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    Log.d(TAG, "Firestore test query successful. Found " + querySnapshot.size() + " total calls for this user");
-                    for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Log.d(TAG, "Existing call: " + doc.getId() + " status: " + doc.getString("status"));
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Firestore test query failed", e);
-                });
-
-        // Listen for ALL calls to this user (not just "calling" status) for debugging
+        // Listen only for active incoming calls
         callListener = db.collection("calls")
                 .whereEqualTo("receiverId", currentUser.getUid())
+                .whereEqualTo("status", "calling")
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
                         Log.e(TAG, "Error listening for calls: " + error.getMessage());
                         return;
                     }
 
-                    Log.d(TAG, "Snapshot listener triggered. Value is null: " + (value == null) + ", isEmpty: " + (value != null ? value.isEmpty() : "N/A"));
-
                     if (value != null && !value.isEmpty()) {
-                        Log.d(TAG, "Found " + value.size() + " total calls for this user");
+                        Log.d(TAG, "Found " + value.size() + " active incoming calls");
+                        
+                        // Start as foreground service when we have incoming calls
+                        startAsForegroundService();
 
-                        // Process each call
+                        // Process each active call
                         for (com.google.firebase.firestore.DocumentSnapshot doc : value.getDocuments()) {
-                            String status = doc.getString("status");
                             String callerId = doc.getString("callerId");
                             String callerName = doc.getString("callerName");
-                            Long timestamp = doc.getLong("timestamp");
-                            Log.d(TAG, "Processing call " + doc.getId() + " from " + callerName + " (status: " + status + ", timestamp: " + timestamp + ")");
-
-                            if ("calling".equals(status)) {
-                                Log.d(TAG, "Found active incoming call - showing notification");
-                                // Show incoming call notification
-                                showIncomingCallNotification(
+                            Long startTime = doc.getLong("startTime");
+                            
+                            // Only auto-accept recent calls (within last 30 seconds)
+                            if (startTime != null && (System.currentTimeMillis() - startTime) < 30000) {
+                                Log.d(TAG, "Auto-accepting incoming call from: " + callerName);
+                                autoAcceptIncomingCall(
                                         doc.getId(),
                                         callerId,
                                         callerName,
                                         doc.getString("callerPhotoUrl")
                                 );
                             } else {
-                                Log.d(TAG, "Call status is not 'calling', it's: " + status);
+                                Log.d(TAG, "Ignoring old call from: " + callerName + " (timestamp: " + startTime + ")");
                             }
                         }
                     } else {
-                        Log.d(TAG, "No calls found for this user in snapshot");
+                        Log.d(TAG, "No active incoming calls found");
+                        
+                        // Stop foreground service when no more incoming calls
+                        stopForegroundService();
                     }
                 });
     }
 
-    private void showIncomingCallNotification(String callId, String callerId, String callerName, String callerPhotoUrl) {
-        Log.d(TAG, "Showing incoming call notification for call: " + callId + " from: " + callerName);
+    private void autoAcceptIncomingCall(String callId, String callerId, String callerName, String callerPhotoUrl) {
+        Log.d(TAG, "Auto-accepting incoming call for call: " + callId + " from: " + callerName);
 
-        // Create intent to open AudioCallActivity for incoming call
-        Intent callIntent = new Intent(this, AudioCallActivity.class);
-        callIntent.putExtra("callId", callId);
-        callIntent.putExtra("otherUserId", callerId);
-        callIntent.putExtra("otherUserName", callerName != null ? callerName : "Unknown Caller");
-        callIntent.putExtra("isOutgoing", false);
-        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                this, 0, callIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        // Create the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Incoming Call")
-                .setContentText(callerName + " is calling...")
-                .setSmallIcon(R.drawable.ic_phone)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_CALL)
-                .setFullScreenIntent(pendingIntent, true)
-                .setAutoCancel(true)
-                .setOngoing(true)
-                .setVibrate(new long[]{0, 1000, 500, 1000});
-
-        // Add action buttons
-        Intent declineIntent = new Intent(this, CallActionReceiver.class);
-        declineIntent.setAction("DECLINE_CALL");
-        declineIntent.putExtra("callId", callId);
-        PendingIntent declinePendingIntent = PendingIntent.getBroadcast(
-                this, 1, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        Intent acceptIntent = new Intent(this, CallActionReceiver.class);
-        acceptIntent.setAction("ACCEPT_CALL");
-        acceptIntent.putExtra("callId", callId);
-        acceptIntent.putExtra("otherUserId", callerId);
-        acceptIntent.putExtra("otherUserName", callerName);
-        PendingIntent acceptPendingIntent = PendingIntent.getBroadcast(
-                this, 2, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        builder.addAction(R.drawable.ic_call_end, "Decline", declinePendingIntent);
-        builder.addAction(R.drawable.ic_phone, "Accept", acceptPendingIntent);
-
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        if (notificationManager != null) {
-            notificationManager.notify(callId.hashCode(), builder.build());
-        }
-
-        Log.d(TAG, "Incoming call notification shown for: " + callerName);
+        // Update call status to accepted in Firestore
+        db.collection("calls")
+                .document(callId)
+                .update("status", "accepted")
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Call auto-accepted in Firestore");
+                    
+                    // Start AudioCallActivity for the accepted call
+                    Intent callIntent = new Intent(this, AudioCallActivity.class);
+                    callIntent.putExtra("callId", callId);
+                    callIntent.putExtra("otherUserId", callerId);
+                    callIntent.putExtra("otherUserName", callerName != null ? callerName : "Unknown Caller");
+                    callIntent.putExtra("isOutgoing", false);
+                    callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(callIntent);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to auto-accept call", e);
+                });
     }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.nurse_connect.ui.chat.AudioCallActivity;
+import com.example.nurse_connect.ui.chat.VideoCallActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CallActionReceiver extends BroadcastReceiver {
@@ -38,12 +39,21 @@ public class CallActionReceiver extends BroadcastReceiver {
                     .document(callId)
                     .update("status", "accepted")
                     .addOnSuccessListener(aVoid -> {
-                        // Start AudioCallActivity
-                        Intent callIntent = new Intent(context, AudioCallActivity.class);
+                        // Determine call type and start appropriate activity
+                        String callType = intent.getStringExtra("callType");
+                        Intent callIntent;
+                        
+                        if ("video".equals(callType)) {
+                            callIntent = new Intent(context, VideoCallActivity.class);
+                        } else {
+                            callIntent = new Intent(context, AudioCallActivity.class);
+                        }
+                        
                         callIntent.putExtra("callId", callId);
                         callIntent.putExtra("otherUserId", intent.getStringExtra("otherUserId"));
                         callIntent.putExtra("otherUserName", intent.getStringExtra("otherUserName"));
                         callIntent.putExtra("isOutgoing", false);
+                        callIntent.putExtra("callType", callType);
                         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         context.startActivity(callIntent);
                     })

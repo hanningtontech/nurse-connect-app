@@ -17,7 +17,6 @@
 
     <!-- Background Colors -->
     <color name="theme_background">#FFFFFF</color>
-    <color name="theme_surface">#F8F9FA</color>
     <color name="theme_surface_variant">#E0F2FF</color>
 
     <!-- Text Colors -->
@@ -26,13 +25,17 @@
     <color name="theme_text_on_primary">#FFFFFF</color>
     <color name="theme_text_on_surface">#343A40</color>
 
+    <!-- Gray Colors -->
+    <color name="theme_light_gray">#F8F9FA</color>
+    <color name="theme_medium_gray">#6C757D</color>
+    <color name="theme_dark_gray">#343A40</color>
+
     <!-- Border and Divider Colors -->
     <color name="theme_border">#E0F2FF</color>
     <color name="theme_divider">#F8F9FA</color>
 
     <!-- Status Colors -->
     <color name="theme_success">#28A745</color>
-    <color name="theme_warning">#FD7E14</color>
     <color name="theme_error">#DC3545</color>
 
     <!-- Chat Specific Colors -->
@@ -61,6 +64,7 @@
     <color name="light_primary">@color/theme_primary_variant</color>
     <color name="text_primary">@color/theme_text_primary</color>
     <color name="text_secondary">@color/theme_text_secondary</color>
+    <color name="background_light">#FAFAFA</color>
     <color name="text_tertiary">@color/theme_text_secondary</color>
     <color name="primary">@color/theme_primary</color>
     <color name="blue">@color/theme_primary</color>
@@ -68,4 +72,99 @@
     <color name="light_blue_50">@color/theme_primary_variant</color>
     <color name="light_green_50">@color/theme_secondary</color>
     <color name="light_red_50">@color/theme_error</color>
+    
+    <!-- Missing colors for Quiz Match system -->
+    <color name="colorPrimary">@color/theme_primary</color>
+    <color name="colorAccent">@color/theme_accent</color>
+    <color name="background_color">@color/theme_background</color>
+    
+    <!-- Flashcard System Colors -->
+    <color name="colorSecondary">@color/theme_secondary</color>
+    <color name="surface_color">@color/theme_surface</color>
+    <color name="colorSurfaceVariant">@color/theme_surface_variant</color>
+    <color name="correct_answer_color">@color/theme_success</color>
+    <color name="incorrect_answer_color">@color/theme_error</color>
+    
+    <!-- Flashcard Button Colors -->
+    <color name="option_button_normal">@color/theme_surface</color>
+    <color name="option_button_correct">@color/theme_success</color>
+    <color name="option_button_incorrect">@color/theme_error</color>
+    
+    <!-- Flashcard Results Colors -->
+    <color name="success_background">#4CAF50</color>
+    <color name="success_text">#2E7D32</color>
+    <color name="error_background">#FF9800</color>
+    <color name="error_text">#E65100</color>
+    <color name="theme_warning">#FFC107</color>
+    <color name="theme_surface">#F5F5F5</color>
+    
+    <!-- Progress Bar Colors -->
+    <color name="flame_orange">#FF6B35</color>
+    
+    <!-- Fallback Question Colors -->
+    <color name="fallback_question_background">#FFF3E0</color>
+    <color name="fallback_question_border">#FFB74D</color>
+
+    <!-- ========================================= -->
+    <!-- MODERN MEDICAL QUIZ GAME COLORS          -->
+    <!-- ========================================= -->
+    
+    <!-- Medical Primary Colors -->
+    <color name="medical_primary">#4A90E2</color>          <!-- Calming Blue -->
+    <color name="medical_primary_variant">#357ABD</color>   <!-- Darker Blue -->
+    <color name="medical_primary_light">#E3F2FD</color>    <!-- Light Blue Background -->
+    
+    <!-- Medical Secondary Colors -->
+    <color name="medical_secondary">#50E3C2</color>        <!-- Teal Green -->
+    <color name="medical_secondary_variant">#26A69A</color> <!-- Darker Teal -->
+    <color name="medical_secondary_light">#E0F2F1</color>  <!-- Light Teal Background -->
+    
+    <!-- Medical Accent Colors -->
+    <color name="medical_accent">#FF6B6B</color>           <!-- Vibrant Coral -->
+    <color name="medical_accent_variant">#E53935</color>    <!-- Darker Coral -->
+    <color name="medical_accent_light">#FFEBEE</color>      <!-- Light Coral Background -->
+    
+    <!-- Medical Success/Error Colors -->
+    <color name="medical_success">#4CAF50</color>           <!-- Success Green -->
+    <color name="medical_success_light">#E8F5E8</color>    <!-- Light Success Background -->
+    <color name="medical_error">#F44336</color>             <!-- Error Red -->
+    <color name="medical_error_light">#FFEBEE</color>       <!-- Light Error Background -->
+    
+    <!-- Medical Neutral Colors -->
+    <color name="medical_surface">#FFFFFF</color>           <!-- Pure White Surface -->
+    <color name="medical_surface_variant">#F8F9FA</color>   <!-- Light Gray Surface -->
+    <color name="medical_background">#FAFBFC</color>        <!-- Off-White Background -->
+    
+    <!-- Medical Text Colors -->
+    <color name="medical_text_primary">#2C3E50</color>     <!-- Dark Blue-Gray Text -->
+    <color name="medical_text_secondary">#7F8C8D</color>   <!-- Medium Gray Text -->
+    <color name="medical_text_tertiary">#BDC3C7</color>     <!-- Light Gray Text -->
+    
+    <!-- Medical Timer Colors -->
+    <color name="medical_timer_normal">#4A90E2</color>      <!-- Normal Timer Blue -->
+    <color name="medical_timer_warning">#FF9800</color>     <!-- Warning Timer Orange -->
+    <color name="medical_timer_danger">#F44336</color>      <!-- Danger Timer Red -->
+    
+    <!-- Medical Button Colors -->
+    <color name="medical_button_primary">#4A90E2</color>   <!-- Primary Button Blue -->
+    <color name="medical_button_secondary">#50E3C2</color> <!-- Secondary Button Teal -->
+    <color name="medical_button_accent">#FF6B6B</color>    <!-- Accent Button Coral -->
+    <color name="medical_button_disabled">#E0E0E0</color>  <!-- Disabled Button Gray -->
+    
+    <!-- HESI A2 Style Colors -->
+    <color name="orange_color">#FF9800</color>
+    <color name="light_blue_color">#E3F2FD</color>
+    
+    <!-- Performance Indicator Colors -->
+    <color name="performance_excellent">#4CAF50</color>  <!-- Green for 80%+ -->
+    <color name="performance_good">#8BC34A</color>       <!-- Light Green for 60-79% -->
+    <color name="performance_fair">#FFC107</color>       <!-- Yellow for 40-59% -->
+    <color name="performance_practice">#FF5722</color>   <!-- Orange for <40% -->
+    
+    <!-- Flame Progress Bar Colors -->
+    <color name="flame_basic">#FF6B35</color>      <!-- Basic flame orange -->
+    <color name="flame_light">#FF8C42</color>      <!-- Light flame orange -->
+    <color name="flame_medium">#FF6347</color>     <!-- Medium flame red-orange -->
+    <color name="flame_intense">#FF4500</color>    <!-- Intense flame red -->
+
 </resources>

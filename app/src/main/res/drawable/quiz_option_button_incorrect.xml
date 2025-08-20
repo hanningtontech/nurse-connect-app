@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/medical_error_light" />
+            <corners android:radius="16dp" />
+            <stroke 
+                android:width="3dp" 
+                android:color="@color/medical_error" />
+            <padding 
+                android:left="20dp" 
+                android:right="20dp" 
+                android:top="16dp" 
+                android:bottom="16dp" />
+        </shape>
+    </item>
+    
+    <!-- Cross icon on the right -->
+    <item android:gravity="end|center_vertical" android:right="16dp">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="@color/medical_error"
+                android:pathData="M19,6.41L17.59,5 12,10.59 6.41,5 5,6.41 10.59,12 5,17.59 6.41,19 12,13.41 17.59,19 19,17.59 13.41,12z"/>
+        </vector>
+    </item>
+    
+</layer-list>

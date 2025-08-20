@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/medical_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quiz Question Extraction Test"
+        android:textAppearance="@style/TextAppearance.Medical.Headline1"
+        android:textColor="@color/medical_text_primary"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This activity tests the PDF text extraction and parsing logic with sample text data."
+        android:textAppearance="@style/TextAppearance.Medical.Body2"
+        android:textColor="@color/medical_text_secondary"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/btnTestExtraction"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Test Extraction"
+        android:textAppearance="@style/TextAppearance.Medical.Button"
+        android:background="@drawable/find_match_button_background"
+        android:textColor="@color/medical_surface"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnClearResults"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Clear Results"
+        android:textAppearance="@style/TextAppearance.Medical.Button"
+        android:background="@drawable/button_secondary"
+        android:textColor="@color/medical_text_primary"
+        android:layout_marginBottom="24dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tvResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click 'Test Extraction' to test the parsing logic..."
+            android:textAppearance="@style/TextAppearance.Medical.Body2"
+            android:textColor="@color/medical_text_secondary"
+            android:background="@drawable/text_background"
+            android:padding="16dp"
+            android:lineSpacingMultiplier="1.2" />
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="@color/medical_primary">
+
+        <!-- Modern Circular Timer and Progress (LEFT SIDE) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- Include our custom circular timer -->
+            <include
+                android:id="@+id/circular_timer"
+                layout="@layout/circular_timer_view"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/text_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 / 10"
+                android:textAppearance="@style/TextAppearance.Medical.Caption"
+                android:textColor="@color/medical_surface" />
+
+        </LinearLayout>
+
+        <!-- Player Scores (RIGHT SIDE) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="left">
+
+            <!-- Player 1 Score (TOP) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/text_player1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Player 1: 0"
+                    android:textAppearance="@style/TextAppearance.Medical.Score"
+                    android:textColor="@color/medical_surface" />
+
+            </LinearLayout>
+
+            <!-- Player 2 Score (BOTTOM) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/text_player2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Player 2: 0"
+                    android:textAppearance="@style/TextAppearance.Medical.Score"
+                    android:textColor="@color/medical_surface" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@id/header"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressTint="@color/medical_secondary"
+        android:progressBackgroundTint="@color/medical_surface_variant"
+        android:background="@drawable/modern_progress_bar_background"
+        android:progressDrawable="@drawable/modern_progress_bar_progress" />
+
+    <!-- Waiting Layout -->
+    <LinearLayout
+        android:id="@+id/layout_waiting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progress_bar"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:background="@color/medical_background"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/ic_waiting"
+            android:layout_marginBottom="24dp"
+            app:tint="@color/medical_primary" />
+
+        <TextView
+            android:id="@+id/text_waiting_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Waiting for opponent to get ready..."
+            android:textAppearance="@style/TextAppearance.Medical.Subtitle1"
+            android:textColor="@color/medical_text_primary"
+            android:gravity="center"
+            android:layout_marginBottom="32dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ready"
+            android:layout_width="200dp"
+            android:layout_height="56dp"
+            android:text="Ready"
+            android:textAppearance="@style/TextAppearance.Medical.Button"
+            android:background="@drawable/find_match_button_background"
+            app:cornerRadius="28dp"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_leave_match"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:text="Leave Match"
+            android:textAppearance="@style/TextAppearance.Medical.Button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/medical_primary"
+            android:textColor="@color/medical_primary" />
+
+    </LinearLayout>
+
+    <!-- Question Layout -->
+    <LinearLayout
+        android:id="@+id/layout_question"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progress_bar"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/medical_background"
+        android:visibility="gone">
+
+        <!-- Question Status (shown above question when completed) -->
+        <TextView
+            android:id="@+id/text_question_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="@style/TextAppearance.Medical.Status"
+            android:textColor="@color/medical_accent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/question_status_background" />
+
+        <!-- Question Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/medical_surface">
+
+            <TextView
+                android:id="@+id/text_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="What is the normal range for adult blood pressure?"
+                android:textAppearance="@style/TextAppearance.Medical.Question"
+                android:textColor="@color/medical_text_primary"
+                android:padding="24dp"
+                android:lineSpacingExtra="8dp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Options -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_options"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Next Question Button (shown when question completed) -->
+        <LinearLayout
+            android:id="@+id/layout_next_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/text_next_question_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Question completed! Press Next to continue..."
+                android:textAppearance="@style/TextAppearance.Medical.Status"
+                android:textColor="@color/medical_text_secondary"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_next_question"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:text="Next Question"
+                android:textAppearance="@style/TextAppearance.Medical.Button"
+                android:background="@drawable/find_match_button_background"
+                app:cornerRadius="28dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Results Layout -->
+    <LinearLayout
+        android:id="@+id/layout_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progress_bar"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text_result_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Victory!"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/text_match_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Match Duration: 02:45"
+            android:textSize="16sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Final Scores -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:id="@+id/text_final_player1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="You: 7"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VS"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginHorizontal="16dp" />
+
+            <TextView
+                android:id="@+id/text_final_player2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Opponent: 5"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_play_again"
+            android:layout_width="250dp"
+            android:layout_height="56dp"
+            android:text="Play Again"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="28dp"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back_to_menu"
+            android:layout_width="250dp"
+            android:layout_height="48dp"
+            android:text="Back to Menu"
+            android:textSize="14sp"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            app:cornerRadius="24dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

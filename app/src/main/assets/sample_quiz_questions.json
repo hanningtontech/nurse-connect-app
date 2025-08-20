@@ -1,0 +1,174 @@
+{
+  "questions": [
+    {
+      "career": "Certified Nursing Assistant (CNA)",
+      "course": "Basic Nursing Skills / Nurse Aide Training",
+      "unit": "Unit 1: Introduction to Healthcare",
+      "question": "What is the primary role of a Certified Nursing Assistant (CNA)?",
+      "options": [
+        "To diagnose medical conditions",
+        "To provide basic patient care under RN supervision",
+        "To prescribe medications",
+        "To perform surgeries"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "CNAs provide basic patient care under the supervision of registered nurses, including activities of daily living.",
+      "difficulty": "easy",
+      "questionId": "cna_basic_skills_unit1_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Certified Nursing Assistant (CNA)",
+      "course": "Basic Nursing Skills / Nurse Aide Training",
+      "unit": "Unit 2: Safety and Emergency Procedures",
+      "question": "What is the most important safety measure when entering a patient's room?",
+      "options": [
+        "Wearing gloves",
+        "Hand hygiene",
+        "Wearing a mask",
+        "Checking the patient's name"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Hand hygiene is the most important safety measure to prevent the spread of infection.",
+      "difficulty": "easy",
+      "questionId": "cna_basic_skills_unit2_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Certified Nursing Assistant (CNA)",
+      "course": "Basic Nursing Skills / Nurse Aide Training",
+      "unit": "Unit 3: Basic Patient Care",
+      "question": "Which activity is considered an Activity of Daily Living (ADL)?",
+      "options": [
+        "Administering medications",
+        "Bathing and dressing",
+        "Reading medical charts",
+        "Taking vital signs"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Bathing and dressing are basic ADLs that CNAs help patients with.",
+      "difficulty": "easy",
+      "questionId": "cna_basic_skills_unit3_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Certified Nursing Assistant (CNA)",
+      "course": "Basic Nursing Skills / Nurse Aide Training",
+      "unit": "Unit 4: Vital Signs and Monitoring",
+      "question": "What is the correct order for taking vital signs?",
+      "options": [
+        "Temperature, Pulse, Respiration, Blood Pressure",
+        "Blood Pressure, Temperature, Pulse, Respiration",
+        "Pulse, Respiration, Temperature, Blood Pressure",
+        "Temperature, Blood Pressure, Pulse, Respiration"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The standard order is Temperature, Pulse, Respiration, Blood Pressure (TPR-BP).",
+      "difficulty": "medium",
+      "questionId": "cna_basic_skills_unit4_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Licensed Practical/Vocational Nurse (LPN/LVN)",
+      "course": "Anatomy and Physiology",
+      "unit": "Unit 1: Introduction to Healthcare",
+      "question": "What is the largest organ in the human body?",
+      "options": [
+        "Heart",
+        "Liver",
+        "Skin",
+        "Brain"
+      ],
+      "correctAnswerIndex": 2,
+      "explanation": "The skin is the largest organ in the human body, covering approximately 20 square feet.",
+      "difficulty": "easy",
+      "questionId": "lpn_anatomy_unit1_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Licensed Practical/Vocational Nurse (LPN/LVN)",
+      "course": "Fundamentals of Nursing",
+      "unit": "Unit 2: Safety and Emergency Procedures",
+      "question": "What is the first step in the nursing process?",
+      "options": [
+        "Planning",
+        "Assessment",
+        "Implementation",
+        "Evaluation"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Assessment is the first step in the nursing process, where data is collected about the patient.",
+      "difficulty": "medium",
+      "questionId": "lpn_fundamentals_unit2_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Licensed Practical/Vocational Nurse (LPN/LVN)",
+      "course": "Pharmacology for LPNs",
+      "unit": "Unit 3: Basic Patient Care",
+      "question": "What is the most common route for medication administration?",
+      "options": [
+        "Intravenous (IV)",
+        "Oral",
+        "Intramuscular (IM)",
+        "Subcutaneous (SC)"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Oral administration is the most common, convenient, and economical route for medications.",
+      "difficulty": "medium",
+      "questionId": "lpn_pharmacology_unit3_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Registered Nurse (RN) - BSN Level",
+      "course": "Health Assessment",
+      "unit": "Unit 1: Introduction to Healthcare",
+      "question": "What is the purpose of a head-to-toe assessment?",
+      "options": [
+        "To save time during patient care",
+        "To provide a systematic and comprehensive evaluation",
+        "To avoid missing important details",
+        "All of the above"
+      ],
+      "correctAnswerIndex": 3,
+      "explanation": "A head-to-toe assessment provides a systematic, comprehensive evaluation that saves time and ensures no details are missed.",
+      "difficulty": "medium",
+      "questionId": "rn_health_assessment_unit1_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Registered Nurse (RN) - BSN Level",
+      "course": "Pathophysiology",
+      "unit": "Unit 2: Safety and Emergency Procedures",
+      "question": "What is inflammation?",
+      "options": [
+        "A disease process",
+        "The body's protective response to injury",
+        "A type of infection",
+        "A medication side effect"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Inflammation is the body's protective response to injury, infection, or irritation.",
+      "difficulty": "medium",
+      "questionId": "rn_pathophysiology_unit2_001",
+      "timeLimit": 30
+    },
+    {
+      "career": "Registered Nurse (RN) - BSN Level",
+      "course": "Medical-Surgical Nursing I & II",
+      "unit": "Unit 3: Basic Patient Care",
+      "question": "What is the priority assessment for a post-operative patient?",
+      "options": [
+        "Pain level",
+        "Airway, breathing, and circulation",
+        "Surgical site",
+        "Medication schedule"
+      ],
+      "correctAnswerIndex": 1,
+      "explanation": "Airway, breathing, and circulation (ABCs) are always the priority assessment for any patient.",
+      "difficulty": "medium",
+      "questionId": "rn_medical_surgical_unit3_001",
+      "timeLimit": 30
+    }
+  ]
+}
